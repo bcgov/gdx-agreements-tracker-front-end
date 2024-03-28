@@ -84,7 +84,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       fieldType: "select",
       fieldLabel: "Initiated By",
       width: "half",
-      tableName: "change_request",
+      pickerName: "initiated_by_option",
       required: true,
     },
     {
