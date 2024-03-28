@@ -85,7 +85,7 @@ const addUpdateBody = S.object()
   .prop("project_status", S.string())
   .prop("funding", S.string())
   .prop("total_project_budget", S.string())
-  .prop("recoverable", Schema.Enum(["Fully", "Partially", "Non-Recoverable", null]))
+  .prop("recoverable", S.string())
   .prop("recoverable_amount", S.string())
   // Agreement
   .prop("agreement_type", S.string())

@@ -17,6 +17,7 @@ import { ContractTypeOption } from "pages/Admin/PickerOptions/ContractTypeOption
 import { ProjectStatusOption } from "pages/Admin/PickerOptions/ProjectStatusOption";
 import { ProjectTypeOption } from "pages/Admin/PickerOptions/ProjectTypeOption";
 import { ProjectFundingOption } from "pages/Admin/PickerOptions/ProjectFundingOption";
+import { ProjectRecoverableOption } from "pages/Admin/PickerOptions/ProjectRecoverableOption";
 
 /*
  * Routes for Admin pages.
@@ -71,6 +72,11 @@ const routes = [
       key="project-funding-option"
       path="project-funding-option"
       element={<ProjectFundingOption />}
+    />
+    <Route
+      key="project-recoverable-option"
+      path="project-recoverable-option"
+      element={<ProjectRecoverableOption />}
     />
   </Route>,
 ];
