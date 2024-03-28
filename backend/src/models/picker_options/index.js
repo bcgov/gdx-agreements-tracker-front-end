@@ -63,6 +63,16 @@ const getCaseStatements = () => {
 const tableLookupValues = (projectId, contractId, params) => {
   const pickerOptions = [
     {
+      id: "project_recoverable",
+      name: "project_recoverable_option",
+      title: "Project Status Option",
+      description: "",
+      table: "config.project_recoverable_option",
+      value: "value",
+      label: `label`,
+      queryAdditions: ``,
+    },
+    {
       id: "project_funding",
       name: "project_funding_option",
       title: "Project Status Option",

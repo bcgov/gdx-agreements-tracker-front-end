@@ -40,6 +40,7 @@ export const PickerOptionsMenu = () => {
       label: "Project Type Option",
       link: "/admin/project-type-option",
     },
+    { label: "Project Recoverable Option", link: "/admin/project-recoverable-option" },
     {
       label: "Resources",
       link: "/admin/resources",

@@ -174,7 +174,7 @@ export const FormConfig = (query: AxiosResponse | undefined) => {
       fieldType: "select",
       fieldLabel: "Recovery Details",
       width: "half",
-      tableName: "project",
+      pickerName: "project_recoverable_option",
     },
     {
       fieldName: "recoverable_amount",
