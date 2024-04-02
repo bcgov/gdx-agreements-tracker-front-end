@@ -21,6 +21,10 @@ export const PickerOptionsMenu = () => {
       link: "/admin/contacts",
     },
     {
+      label: "Deliverable Status Option",
+      link: "/admin/deliverable-status-option",
+    },
+    {
       label: "Initiated By Option",
       link: "/admin/initiated-by-option",
     },
