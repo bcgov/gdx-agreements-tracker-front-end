@@ -130,7 +130,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       fieldType: "select",
       fieldLabel: "Deliverable Status",
       width: "half",
-      tableName: "generic",
+      pickerName: "deliverable_status_option",
     },
     {
       width: "half",
