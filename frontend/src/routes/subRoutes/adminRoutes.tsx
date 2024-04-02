@@ -20,6 +20,7 @@ import { ProjectFundingOption } from "pages/Admin/PickerOptions/ProjectFundingOp
 import { ProjectRecoverableOption } from "pages/Admin/PickerOptions/ProjectRecoverableOption";
 import { InitiatedByOption } from "pages/Admin/PickerOptions/InitiatedByOption";
 import { DeliverableStatusOption } from "pages/Admin/PickerOptions/DeliverableStatusOption";
+import { QuarterOption } from "pages/Admin/PickerOptions/QuarterOption";
 
 /*
  * Routes for Admin pages.
@@ -86,6 +87,7 @@ const routes = [
       path="deliverable-status-option"
       element={<DeliverableStatusOption />}
     />
+    <Route key="quarter-option" path="quarter-option" element={<QuarterOption />} />
   </Route>,
 ];
 

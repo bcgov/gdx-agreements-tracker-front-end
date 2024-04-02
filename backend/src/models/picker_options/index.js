@@ -63,6 +63,16 @@ const getCaseStatements = () => {
 const tableLookupValues = (projectId, contractId, params) => {
   const pickerOptions = [
     {
+      id: "quarter",
+      name: "quarter_option",
+      title: "Project Quarter Option",
+      description: "",
+      table: "config.quarter_option",
+      value: "value",
+      label: `label`,
+      queryAdditions: ``,
+    },
+    {
       id: "deliverable_status",
       name: "deliverable_status_option",
       title: "Project Status Option",
