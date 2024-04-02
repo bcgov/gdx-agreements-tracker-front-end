@@ -63,6 +63,7 @@ export const PickerOptionsMenu = () => {
       link: "/admin/subcontractors",
     },
     { label: "Yes/No Option", link: "/admin/yes-no-option" },
+    { label: "Quarter Option", link: "/admin/quarter-option" },
   ];
 
   return (

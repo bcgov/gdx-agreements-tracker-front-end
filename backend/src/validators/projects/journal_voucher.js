@@ -7,7 +7,7 @@ const getAll = {
       S.object()
         .prop("id", S.number())
         .prop("fiscal", S.string())
-        .prop("quarter", S.number())
+        .prop("quarter", S.string())
         .prop("jv_number", S.string())
         .prop("billed_date", S.string())
         .prop("amount", S.string())
@@ -25,7 +25,7 @@ const getOne = {
       .prop("billed_date", S.string())
       .prop("amount", S.string())
       .prop("fiscal_year_id", Schema.Picker)
-      .prop("quarter", S.number())
+      .prop("quarter", S.string())
       .prop("project_id", Schema.Id)
       .prop(
         "client_coding_id",

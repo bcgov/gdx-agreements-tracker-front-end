@@ -1,13 +1,13 @@
-const controller = require("@controllers/projects/journal_voucher");
-const validators = require("@validators/projects/journal_voucher");
-const what = "jv";
+const controller = require("@controllers/admin/option_tables");
+const validators = require("@validators/admin/option_tables");
+const what = "quarter_option";
 
 const routes = [
   {
     method: "GET",
-    url: `/projects/:id/${what}`,
-    // schema: validators.getAll,
-    handler: controller.getAllJvs,
+    url: `/${what}`,
+    schema: validators.getAll,
+    handler: controller.getAll,
   },
   {
     method: "GET",

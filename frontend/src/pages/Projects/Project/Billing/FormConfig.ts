@@ -89,7 +89,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       fieldType: "select",
       width: "half",
       required: true,
-      tableName: "generic",
+      pickerName: "quarter_option",
     },
     {
       fieldName: "client_coding_id",
