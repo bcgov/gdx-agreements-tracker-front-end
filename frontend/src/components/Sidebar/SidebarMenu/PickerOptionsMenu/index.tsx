@@ -64,6 +64,10 @@ export const PickerOptionsMenu = () => {
     },
     { label: "Yes/No Option", link: "/admin/yes-no-option" },
     { label: "Quarter Option", link: "/admin/quarter-option" },
+    {
+      label: "Project Budget Resource Type Option",
+      link: "/admin/project-budget-resource-type-option",
+    },
   ];
 
   return (

@@ -364,7 +364,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       fieldLabel: "Resource Type",
       fieldName: "resource_type",
       fieldType: "select",
-      tableName: "project_budget",
+      pickerName: "project_budget_resource_type_option",
     },
     {
       width: "half",
