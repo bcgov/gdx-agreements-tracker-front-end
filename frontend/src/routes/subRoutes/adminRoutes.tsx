@@ -21,6 +21,7 @@ import { ProjectRecoverableOption } from "pages/Admin/PickerOptions/ProjectRecov
 import { InitiatedByOption } from "pages/Admin/PickerOptions/InitiatedByOption";
 import { DeliverableStatusOption } from "pages/Admin/PickerOptions/DeliverableStatusOption";
 import { QuarterOption } from "pages/Admin/PickerOptions/QuarterOption";
+import { ProjectBudgetResourceTypeOption } from "pages/Admin/PickerOptions/ProjectBillingResourceTypeOption";
 
 /*
  * Routes for Admin pages.
@@ -88,6 +89,11 @@ const routes = [
       element={<DeliverableStatusOption />}
     />
     <Route key="quarter-option" path="quarter-option" element={<QuarterOption />} />
+    <Route
+      key="project-budget-resource-type-option"
+      path="project-budget-resource-type-option"
+      element={<ProjectBudgetResourceTypeOption />}
+    />
   </Route>,
 ];
 
