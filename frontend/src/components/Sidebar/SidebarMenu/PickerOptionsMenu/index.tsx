@@ -21,6 +21,11 @@ export const PickerOptionsMenu = () => {
       link: "/admin/contacts",
     },
     {
+      label: "Initiated By Option",
+      link: "/admin/initiated-by-option",
+    },
+
+    {
       label: "Ministries / Org Name",
       link: "/admin/ministries",
     },
