@@ -31,8 +31,18 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const rowsToLock = null === rowId ? [] : [Number(rowId)];
   const postUrl = `/subcontractors`;
   const updateUrl = `/subcontractors/${rowId}`;
+  const deleteUrl = `/subcontractors/${query}`;
 
   const formTitle = "Subcontractors";
 
-  return { readFields, editFields, initialValues, rowsToLock, postUrl, updateUrl, formTitle };
+  return {
+    readFields,
+    editFields,
+    initialValues,
+    rowsToLock,
+    postUrl,
+    updateUrl,
+    formTitle,
+    deleteUrl,
+  };
 };

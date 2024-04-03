@@ -40,9 +40,12 @@ const addOne = {
   response: getAddResponse(),
 };
 
+const deleteOne = getOne;
+
 module.exports = {
   getAll,
   getOne,
   updateOne,
   addOne,
+  deleteOne,
 };
