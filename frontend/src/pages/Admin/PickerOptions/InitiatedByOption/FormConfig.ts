@@ -24,8 +24,18 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const rowsToLock = null === rowId ? [] : [Number(rowId)];
   const postUrl = `/initiated_by_option`;
   const updateUrl = `/initiated_by_option/${rowId}`;
+  const deleteUrl = `/initiated_by_option/${query}`;
 
   const formTitle = "Initiated By Option";
 
-  return { readFields, editFields, initialValues, rowsToLock, postUrl, updateUrl, formTitle };
+  return {
+    readFields,
+    editFields,
+    initialValues,
+    rowsToLock,
+    postUrl,
+    updateUrl,
+    formTitle,
+    deleteUrl,
+  };
 };

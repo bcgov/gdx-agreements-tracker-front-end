@@ -24,8 +24,18 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const rowsToLock = null === rowId ? [] : [Number(rowId)];
   const postUrl = `/project_budget_resource_type_option`;
   const updateUrl = `/project_budget_resource_type_option/${rowId}`;
+  const deleteUrl = `/project_budget_resource_type_option/${query}`;
 
   const formTitle = "Project Budget Resource Type Option";
 
-  return { readFields, editFields, initialValues, rowsToLock, postUrl, updateUrl, formTitle };
+  return {
+    readFields,
+    editFields,
+    initialValues,
+    rowsToLock,
+    postUrl,
+    updateUrl,
+    formTitle,
+    deleteUrl,
+  };
 };

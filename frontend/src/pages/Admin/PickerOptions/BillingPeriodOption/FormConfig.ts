@@ -24,8 +24,18 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const rowsToLock = null === rowId ? [] : [Number(rowId)];
   const postUrl = `/billing_period_option`;
   const updateUrl = `/billing_period_option/${rowId}`;
+  const deleteUrl = `/billing_period_option/${query}`;
 
   const formTitle = "Billing Period Option";
 
-  return { readFields, editFields, initialValues, rowsToLock, postUrl, updateUrl, formTitle };
+  return {
+    readFields,
+    editFields,
+    initialValues,
+    rowsToLock,
+    postUrl,
+    updateUrl,
+    formTitle,
+    deleteUrl,
+  };
 };

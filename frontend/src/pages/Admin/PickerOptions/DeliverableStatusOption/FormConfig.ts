@@ -24,8 +24,18 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const rowsToLock = null === rowId ? [] : [Number(rowId)];
   const postUrl = `/deliverable_status_option`;
   const updateUrl = `/deliverable_status_option/${rowId}`;
+  const deleteUrl = `/deliverable_status_option/${query}`;
 
   const formTitle = "Deliverable Status Option";
 
-  return { readFields, editFields, initialValues, rowsToLock, postUrl, updateUrl, formTitle };
+  return {
+    readFields,
+    editFields,
+    initialValues,
+    rowsToLock,
+    postUrl,
+    updateUrl,
+    formTitle,
+    deleteUrl,
+  };
 };
