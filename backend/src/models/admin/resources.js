@@ -76,9 +76,20 @@ const addOne = (newResource) => {
   return knex(table).insert(newResource);
 };
 
+/**
+ * Removes a resource based on the id.
+ *
+ * @param   {integer} id The id of the resource to remove.
+ * @returns {object}
+ */
+const removeOne = (id) => {
+  return knex(table).where("id", id).del();
+};
+
 module.exports = {
   findAll,
   findById,
   updateOne,
   addOne,
+  removeOne,
 };

@@ -32,9 +32,14 @@ const addOne = (supplier) => {
   return knex(table).insert(supplier);
 };
 
+const removeOne = (id) => {
+  return knex(table).where("id", id).del();
+};
+
 module.exports = {
   findAll,
   findById,
   updateOne,
   addOne,
+  removeOne,
 };

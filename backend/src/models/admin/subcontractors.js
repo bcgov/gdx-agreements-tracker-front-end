@@ -33,10 +33,15 @@ const addOne = (newSubcontractor) => {
   return knex(table).insert(newSubcontractor);
 };
 
+const removeOne = (id) => {
+  return knex(table).where("id", id).del();
+};
+
 module.exports = {
   findAll,
   findById,
   findByContractId,
   updateOne,
   addOne,
+  removeOne,
 };

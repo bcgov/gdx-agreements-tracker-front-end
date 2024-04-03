@@ -47,9 +47,14 @@ const addOne = (newContact) => {
   return knex(table).insert(newContact);
 };
 
+const removeOne = (id) => {
+  return knex(table).where("id", id).del();
+};
+
 module.exports = {
   findAll,
   findById,
   updateOne,
   addOne,
+  removeOne,
 };
