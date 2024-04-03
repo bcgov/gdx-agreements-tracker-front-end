@@ -96,9 +96,28 @@ const updateOne = async (request, reply) => {
   }
 };
 
+/**
+ * Delete an option
+ *
+ * @param   {FastifyRequest} request FastifyRequest is an instance of the standard http or http2 request objects.
+ * @param   {FastifyReply}   reply   FastifyReply is an instance of the standard http or http2 reply types.
+ * @returns {object}
+ */
+const deleteOne = async (request, reply) => {
+  const targetId = Number(request.params.id);
+
+  try {
+    const result = await model.optionTablesModel(request, targetId).deleteOne();
+    return result || noQuery(reply, `The request for ${request.url} could not be deleted.`);
+  } catch (err) {
+    return failedQuery(reply, err);
+  }
+};
+
 module.exports = {
   getAll,
   getOne,
   addOne,
   updateOne,
+  deleteOne,
 };

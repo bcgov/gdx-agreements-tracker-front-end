@@ -479,6 +479,7 @@ export type TFormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   updateUrl: string;
   validationSchema?: YupSchema<{ [key]: Function }>;
   authorizedToEdit?: string;
+  formTitle?: string;
 };
 
 export interface ITableWithModalData {
