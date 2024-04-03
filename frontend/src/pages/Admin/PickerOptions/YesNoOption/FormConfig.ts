@@ -19,13 +19,22 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const initialValues = {
     label: "",
   };
-
   const rowId = query?.data?.data?.data?.id ?? null;
   const rowsToLock = null === rowId ? [] : [Number(rowId)];
   const postUrl = `/yes_no_option`;
   const updateUrl = `/yes_no_option/${rowId}`;
 
   const formTitle = "Yes/No Option";
+  const deleteUrl = `/yes_no_option/${query}`;
 
-  return { readFields, editFields, initialValues, rowsToLock, postUrl, updateUrl, formTitle };
+  return {
+    readFields,
+    editFields,
+    initialValues,
+    rowsToLock,
+    postUrl,
+    updateUrl,
+    formTitle,
+    deleteUrl,
+  };
 };

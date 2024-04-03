@@ -29,7 +29,7 @@ interface FormDialogProps {
   handleClose: Function;
   handleDelete: (options: { apiUrl: string }) => Promise<void>; // Update the function signature
   deleteUrl: string;
-  formConfig: Function;
+  formTitle: string;
 }
 
 const FormDialog: React.FC<FormDialogProps> = ({
@@ -38,11 +38,10 @@ const FormDialog: React.FC<FormDialogProps> = ({
   handleClose,
   handleDelete,
   deleteUrl,
-  formConfig,
+  formTitle,
 }) => {
   const [openDeletePrompt, setOpenDeletePrompt] = useState(false);
   const queryClient = useQueryClient();
-  const { formTitle = "" } = formConfig();
 
   const handleDeleteResponse = async () => {
     await handleDelete({ apiUrl: deleteUrl }).then(() => {

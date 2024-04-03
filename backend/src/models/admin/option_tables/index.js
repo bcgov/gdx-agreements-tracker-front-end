@@ -26,7 +26,11 @@ const optionTablesModel = (request, id) => {
     return knex(tableName).insert({ value: label, label: label });
   };
 
-  return { findAll, findById, updateOne, addOne };
+  const deleteOne = () => {
+    return knex(tableName).where("id", id).del();
+  };
+
+  return { findAll, findById, updateOne, addOne, deleteOne };
 };
 
 module.exports = {
