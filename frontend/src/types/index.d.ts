@@ -511,8 +511,15 @@ export interface IRowDoubleClickParams {
   row: { [key: string]: string | number | boolean };
 }
 
-export interface Irgb {
-  rgb: { red: number; green: number; blue: number; health_name: string };
+interface Irgb {
+  red: number;
+  green: number;
+  blue: number;
+}
+
+export interface ITableHealthChip {
+  color: Irgb | string;
+  caption?: string;
 }
 
 export type ConvertToStringItem =

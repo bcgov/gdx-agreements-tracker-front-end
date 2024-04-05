@@ -21,7 +21,7 @@ export const useRenderTableCell = (params: GridRenderCellParams) => {
     return (
       <GridCell {...params}>
         {" "}
-        <TableHealthChip rgb={params.value} />
+        <TableHealthChip color={params.value} />
       </GridCell>
     );
   }

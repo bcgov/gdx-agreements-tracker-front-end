@@ -1,7 +1,7 @@
 import React, { FC } from "react";
-import { Autocomplete, Box, TextField, TextFieldProps } from "@mui/material";
+import { Box, TextField, TextFieldProps, Typography, Autocomplete } from "@mui/material";
 import { IPickerProps, IOption } from "../../../../types";
-
+import { TableHealthChip } from "components/Table/TableHealthChip";
 /**
  * A component that renders a select input field with autocomplete functionality.
  *
@@ -55,8 +55,11 @@ export const Select: FC<IPickerProps> = ({
       multiple={multiple}
       value={fieldValue}
       renderOption={(props: object, option: IOption) => (
-        <Box component="li" sx={{ background: option?.option_style }} {...props}>
-          {option?.label}
+        <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }} {...props}>
+          <TableHealthChip color={option?.option_style} />
+          <Typography variant="body1" gutterBottom>
+            {option?.label}
+          </Typography>
         </Box>
       )}
       renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (

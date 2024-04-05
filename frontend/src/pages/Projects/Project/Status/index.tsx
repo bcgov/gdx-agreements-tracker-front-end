@@ -6,6 +6,8 @@ import { tableConfig } from "./tableConfig";
 import { FormConfig } from "./FormConfig";
 import useTitle from "hooks/useTitle";
 import { useEffect } from "react";
+import { Grid } from "@mui/material";
+import { Legend } from "components/Legend";
 
 export const Status = () => {
   const { updateTitle } = useTitle();
@@ -19,13 +21,20 @@ export const Status = () => {
   const formControls: IFormControls = useFormControls();
 
   return (
-    <TableWithModal
-      tableName={"project_status"}
-      tableConfig={tableConfig()}
-      formControls={formControls}
-      formConfig={FormConfig}
-      tableDataApiEndPoint={`projects/${projectId}/status`}
-      formDataApiEndpoint={`/projects/status/${formControls.currentRowData?.id}`}
-    />
+    <Grid container spacing={1}>
+      <Grid item xs={12} sm={12} md={12} lg={10} xl={11} sx={{ overflowX: "scroll" }}>
+        <TableWithModal
+          tableName={"project_status"}
+          tableConfig={tableConfig()}
+          formControls={formControls}
+          formConfig={FormConfig}
+          tableDataApiEndPoint={`projects/${projectId}/status`}
+          formDataApiEndpoint={`/projects/status/${formControls.currentRowData?.id}`}
+        />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={2} xl={1}>
+        <Legend legendTitle="Health" />
+      </Grid>
+    </Grid>
   );
 };
