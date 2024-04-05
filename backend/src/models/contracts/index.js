@@ -244,14 +244,14 @@ const findBudgetsByFiscal = async (id) => {
       fiscal: "fy.fiscal_year",
       total_fees: totalFees,
       total_expenses: totalExpenses,
-      total_fiscal_1: knex.raw(
+      total: knex.raw(
         `to_char(COALESCE(deliverables.total_fees, 0) + ROUND(COALESCE(expenses.total_expenses, 0)), '$999,999,999.00')`
       ),
       total_hours: knex.raw("COALESCE(resources.total_hours, 0)"),
       invoiced_hours: knex.raw("ROUND(COALESCE(invoiced_resources.invoiced_hours, 0))"),
       invoiced_fees: invoicedFess,
       invoiced_expenses: invoicedExpenses,
-      total_fiscal_2: knex.raw(
+      total_invoice: knex.raw(
         `to_char(COALESCE(invoiced_fees.invoiced_fees, 0) + COALESCE(invoiced_expenses.invoiced_expenses, 0), '$999,999,999.00')`
       ),
 
@@ -260,7 +260,7 @@ const findBudgetsByFiscal = async (id) => {
       ),
       remaining_fees: remainingFees,
       remaining_expenses: remaingExpenses,
-      total_fiscal_3: knex.raw(
+      total_remaining: knex.raw(
         `to_char(ROUND(COALESCE(deliverables.total_fees, 0) - COALESCE(invoiced_fees.invoiced_fees, 0)) + ROUND(COALESCE(expenses.total_expenses, 0) - COALESCE(invoiced_expenses.invoiced_expenses, 0)), '$999,999,999.00')`
       ),
     })
