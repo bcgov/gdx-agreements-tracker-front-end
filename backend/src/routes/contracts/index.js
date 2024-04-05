@@ -6,7 +6,7 @@ const routes = [
   {
     method: "GET",
     url: `/${what}`,
-    schema: validators.getAll,
+    // schema: validators.getAll,
     handler: controller.getAll,
   },
   {
@@ -18,7 +18,7 @@ const routes = [
   {
     method: "GET",
     url: `/contracts/:id/budgets`,
-    // schema: validators.getOne,
+    schema: validators.getBudgets,
     handler: controller.budgetsByFiscal,
   },
   {
@@ -29,8 +29,7 @@ const routes = [
   },
   {
     method: "POST",
-    //TODO resolve the trailing slash for creating new contract route
-    url: `/${what}/`,
+    url: `/${what}`,
     schema: validators.addOne,
     handler: controller.addOne,
   },

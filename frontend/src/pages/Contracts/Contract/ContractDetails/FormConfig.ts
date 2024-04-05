@@ -288,7 +288,7 @@ export const FormConfig = (query: AxiosResponse | undefined) => {
     notes: "",
   };
   const rowsToLock = [query?.data?.data?.data?.id];
-  const postUrl = `/contracts/`;
+  const postUrl = `/contracts`;
   const updateUrl = `/contracts/${query?.data?.data?.data?.id}`;
 
   // Validate contract details section (required) inputs
