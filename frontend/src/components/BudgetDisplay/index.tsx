@@ -37,19 +37,19 @@ export const BudgetDisplay = ({ apiUrl }: { apiUrl: string }) => {
               "Total Hours": budget.total_hours,
               "Total Fees": budget.total_fees,
               "Total Expenses": budget.total_expenses,
-              Total: budget.total_fees + budget.total_expenses,
+              Total: budget.total_fiscal_1,
             },
             {
               "Hours Invoiced": budget.invoiced_hours,
               "Fees Invoiced": budget.invoiced_fees,
               "Expenses Invoiced": budget.invoiced_expenses,
-              Total: budget.invoiced_fees + budget.invoiced_expenses,
+              Total: budget.total_fiscal_2,
             },
             {
               "Remaining Hours": budget.remaining_hours,
               "Remaining Fees": budget.remaining_fees,
               "Remaining Expenses": budget.remaining_expenses,
-              Total: budget.remaining_fees + budget.remaining_expenses,
+              Total: budget.total_fiscal_3,
             },
           ];
           return <List key={index} data={rows} title={`Fiscal ${budget.fiscal}`} />;

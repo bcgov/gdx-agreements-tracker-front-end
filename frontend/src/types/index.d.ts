@@ -409,6 +409,9 @@ export interface IBudget {
   total_expenses: number;
   total_fees: number;
   total_hours: number;
+  total_fiscal_1: string;
+  total_fiscal_2: string;
+  total_fiscal_3: string;
 }
 
 export interface IReportParamOptions {

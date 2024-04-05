@@ -86,9 +86,32 @@ const addOne = {
   response: getAddResponse(),
 };
 
+const getBudgets = {
+  response: getResponse(
+    S.array().items(
+      S.object()
+        .prop("current_fiscal", S.boolean())
+        .prop("fiscal", S.string())
+        .prop("total_fees", Schema.Money)
+        .prop("total_expenses", Schema.Money)
+        .prop("total_fiscal_1", Schema.Money)
+        .prop("total_hours", S.number())
+        .prop("invoiced_hours", S.number())
+        .prop("invoiced_fees", Schema.Money)
+        .prop("invoiced_expenses", Schema.Money)
+        .prop("total_fiscal_2", Schema.Money)
+        .prop("remaining_hours", S.number())
+        .prop("remaining_fees", Schema.Money)
+        .prop("remaining_expenses", Schema.Money)
+        .prop("total_fiscal_3", Schema.Money)
+    )
+  ),
+};
+
 module.exports = {
   getAll,
   getOne,
   updateOne,
   addOne,
+  getBudgets,
 };
