@@ -17,19 +17,19 @@ export const Legend = ({ legendTitle }: { legendTitle: string }) => {
   const lessThanLarge = useMediaQuery(theme.breakpoints.down("lg"));
 
   const legendValues: ILegendValues[] = [
-    { label: "Not Started", color: "#ffffff", caption: "Not Started" },
-    { label: "Active", color: "#00ff00", caption: "Active and on-track" },
+    { label: "Not Started", color: { red: 255, green: 255, blue: 255 }, caption: "Not Started" },
+    { label: "Active", color: { red: 0, green: 255, blue: 0 }, caption: "Active and on-track" },
     {
       label: "Minor",
-      color: "#ffff00",
+      color: { red: 255, green: 255, blue: 0 },
       caption: "Active but some concerns need to be monitored closely",
     },
     {
       label: "Major",
-      color: "#ff0000",
+      color: { red: 255, green: 0, blue: 0 },
       caption: "Active But Major Concerns and needs corrective action",
     },
-    { label: "Complete", color: "#5a83ff", caption: "Complete" },
+    { label: "Complete", color: { red: 90, green: 131, blue: 255 }, caption: "Complete" },
   ];
 
   return (

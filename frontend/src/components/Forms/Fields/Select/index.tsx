@@ -54,14 +54,16 @@ export const Select: FC<IPickerProps> = ({
       }}
       multiple={multiple}
       value={fieldValue}
-      renderOption={(props: object, option: IOption) => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }} {...props}>
-          <TableHealthChip color={option?.option_style} />
-          <Typography variant="body1" gutterBottom>
-            {option?.label}
-          </Typography>
-        </Box>
-      )}
+      renderOption={(props: object, option: IOption) => {
+        return (
+          <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }} {...props}>
+            {option?.option_style && <TableHealthChip color={option?.option_style} />}
+            <Typography variant="body1" gutterBottom>
+              {option?.label}
+            </Typography>
+          </Box>
+        );
+      }}
       renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
         <TextField
           required={required}

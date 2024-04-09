@@ -2,7 +2,7 @@ import { Chip, Tooltip } from "@mui/material";
 import { ITableHealthChip } from "types";
 
 export const TableHealthChip = ({ color, caption }: ITableHealthChip) => {
-  const { red, green, blue } = "string" === typeof color ? { red: 0, green: 0, blue: 0 } : color;
+  const { red, green, blue } = color;
 
   const chipStyles = {
     backgroundColor: "string" === typeof color ? color : `rgb(${red},${green},${blue})`,

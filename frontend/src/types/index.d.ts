@@ -36,7 +36,7 @@ export interface IUseAxiosHandleError {
 
 export interface ILegendValues {
   label: string;
-  color: string;
+  color: { red: number; green: number; blue: number };
   caption: string;
 }
 // Data Structures
@@ -349,7 +349,7 @@ export interface IDate {
 
 export interface IOption {
   value: number | string;
-  [key: string]: string;
+  [key: string]: Irgb;
 }
 
 export interface ISelect {
@@ -518,7 +518,7 @@ interface Irgb {
 }
 
 export interface ITableHealthChip {
-  color: Irgb | string;
+  color: Irgb;
   caption?: string;
 }
 
