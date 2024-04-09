@@ -332,15 +332,31 @@ const tableLookupValues = (projectId, contractId, params) => {
       value: "id",
       label: "health_name",
       queryAdditions: ``,
-      customDefinition: `(SELECT COALESCE(json_agg(healthStatusOptions), '[]')
-        FROM (
-          SELECT
-            hi.id as value,
-            hi.health_name as label,
-            CONCAT_WS('', 'rgb(',colour_red, ',',colour_green,',', colour_blue,')') AS option_style
-          FROM data.health_indicator as hi
-          ORDER BY id ASC
-          ) AS healthStatusOptions)`,
+      customDefinition: `(SELECT COALESCE(
+        json_agg(
+            json_build_object(
+                'value', hi.id,
+                'label', 
+                CASE
+                    WHEN hi.health_name = 'Green' THEN 'Active'
+                    WHEN hi.health_name = 'Not Started' THEN 'Not Started'
+                    WHEN hi.health_name = 'Yellow' THEN 'Minor'
+                    WHEN hi.health_name = 'Red' THEN 'Major'
+                    WHEN hi.health_name = 'Complete' THEN 'Complete'
+                    ELSE hi.health_name -- Use the original value if it doesn't match any of the above
+                END,
+                'option_style', 
+                json_build_object(
+                    'red', hi.colour_red,
+                    'green', hi.colour_green,
+                    'blue', hi.colour_blue
+                )
+            )
+            ORDER BY id ASC
+        ),
+        '[]'
+    )
+    FROM data.health_indicator as hi)`,
     },
     {
       id: "projectphase",

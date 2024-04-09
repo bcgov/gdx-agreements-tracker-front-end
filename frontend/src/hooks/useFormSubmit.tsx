@@ -24,7 +24,7 @@ export const useFormSubmit = () => {
     } else {
       Object.keys(changedValues).forEach((key) => {
         if (changedValues[key] !== currentRowData[key]) {
-          if (null !== changedValues[key] && changedValues[key].value) {
+          if ("object" === typeof changedValues[key] && "value" in changedValues[key]) {
             deltaChanges[key] = changedValues[key].value;
           } else {
             deltaChanges[key] = changedValues[key];
@@ -32,7 +32,6 @@ export const useFormSubmit = () => {
         }
       });
     }
-
     const response = await axiosAll().put(apiUrl, deltaChanges);
     return response.data;
   };

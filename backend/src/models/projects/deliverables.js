@@ -53,7 +53,15 @@ const findById = (id) => {
       "prd.deliverable_status",
       "prd.percent_complete",
       knex.raw(
-        "( SELECT json_build_object('value', prd.health_id, 'label', ph.health_name) ) AS health_id"
+        "(SELECT json_build_object('value', prd.health_id, 'label', " +
+          "CASE " +
+          "WHEN ph.health_name = 'Green' THEN 'Active' " +
+          "WHEN ph.health_name = 'Not Started' THEN 'Not Started' " +
+          "WHEN ph.health_name = 'Yellow' THEN 'Minor' " +
+          "WHEN ph.health_name = 'Red' THEN 'Major' " +
+          "WHEN ph.health_name = 'Complete' THEN 'Complete' " +
+          "ELSE ph.health_name " +
+          "END) AS health_id)"
       ),
       "prd.is_expense"
     )

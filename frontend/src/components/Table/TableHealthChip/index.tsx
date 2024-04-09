@@ -1,16 +1,21 @@
-import { Chip } from "@mui/material";
-import { Irgb } from "types";
+import { Chip, Tooltip } from "@mui/material";
+import { ITableHealthChip } from "types";
 
-export const TableHealthChip = ({ rgb }: Irgb) => {
-  const { red, green, blue, health_name } = rgb;
+export const TableHealthChip = ({ color, caption }: ITableHealthChip) => {
+  const { red, green, blue } = color;
 
   const chipStyles = {
-    backgroundColor: `rgb(${red},${green},${blue})`,
+    backgroundColor: "string" === typeof color ? color : `rgb(${red},${green},${blue})`,
     fontWeight: "bold",
-    border: "solid 1px red",
+    border: "solid 1px #ccc",
     borderRadius: "4px",
     maxHeight: "1.6rem", // make them square in spite of the auto-height on the row cells.
+    maxWidth: "1.6rem",
   };
 
-  return <Chip sx={chipStyles} label={health_name} />;
+  return (
+    <Tooltip title={caption}>
+      <Chip sx={chipStyles} />
+    </Tooltip>
+  );
 };

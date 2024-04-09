@@ -42,7 +42,7 @@ export const formatTableColumns = (
             params.value.green !== undefined &&
             params.value.blue !== undefined
           ) {
-            return <TableHealthChip rgb={params.value} />;
+            return <TableHealthChip color={params.value} />;
           }
           if ("boolean" === typeof params.value) {
             return <Checkbox disabled checked={params.value} />;

@@ -36,7 +36,7 @@ export interface IUseAxiosHandleError {
 
 export interface ILegendValues {
   label: string;
-  color: string;
+  color: { red: number; green: number; blue: number };
   caption: string;
 }
 // Data Structures
@@ -349,7 +349,7 @@ export interface IDate {
 
 export interface IOption {
   value: number | string;
-  [key: string]: string;
+  [key: string]: Irgb;
 }
 
 export interface ISelect {
@@ -511,8 +511,15 @@ export interface IRowDoubleClickParams {
   row: { [key: string]: string | number | boolean };
 }
 
-export interface Irgb {
-  rgb: { red: number; green: number; blue: number; health_name: string };
+interface Irgb {
+  red: number;
+  green: number;
+  blue: number;
+}
+
+export interface ITableHealthChip {
+  color: Irgb;
+  caption?: string;
 }
 
 export type ConvertToStringItem =
