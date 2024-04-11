@@ -66,7 +66,7 @@ const testReport = (reportName) => {
       model.required = ["requiredField"];
       const response = await app.inject(requestObject);
       expect(JSON.parse(response.body).data.message).toBe(
-        "One or more Parameters is undefined or not valid [requiredField]"
+        "At least one of the following parameters is required: requiredField"
       );
       expect(response.statusCode).toBe(400);
     });

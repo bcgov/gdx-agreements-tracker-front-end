@@ -35,15 +35,16 @@ const useController = (model, what, capabilityPrefix = null) => {
    *
    * @param {object} query    FastifyRequest is an instance of the standard http or http2 request objects.
    * @param {string} reply    The fastify reply object
-   * @param {Array}  requires The array of required fields
+   * @param {Array}  required The array of required fields
    */
-  const validate = (query, reply, requires) => {
-    requires.forEach((value) => {
-      if (undefined === query[value] || 0 === query[value].length) {
-        const warningMessage = `One or more Parameters is undefined or not valid [${requires.toString()}]`;
-        send(400, reply, warningMessage);
-      }
-    });
+  const validate = (query, reply, required) => {
+    const found = required.some((value) => value in query);
+    if (!found) {
+      const warningMessage = `At least one of the following parameters is required: ${required.join(
+        ", "
+      )}`;
+      send(400, reply, warningMessage);
+    }
   };
 
   /**

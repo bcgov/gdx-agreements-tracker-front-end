@@ -168,12 +168,13 @@ const queries = {
  * @returns {object}                 - An object containing fiscal year, report, and report total.
  */
 // add other parameters if needed, like quarter, portfolio, date etc.
-const getAll = async ({ fiscal, quarter }) => {
+const getAll = async ({ fiscal, quarter, fiscal_year_id }) => {
   try {
     // Await all promises in parallel
+    const fiscalValue = fiscal ? fiscal : fiscal_year_id;
     const [{ fiscal_year }, report] = await Promise.all([
-      queries.fiscal(fiscal),
-      queries.report(fiscal, quarter),
+      queries.fiscal(fiscalValue),
+      queries.report(fiscalValue, quarter),
     ]);
 
     return { fiscal_year, report };
@@ -185,4 +186,4 @@ const getAll = async ({ fiscal, quarter }) => {
 
 // Export the functions to be used in controller.
 //  required can be fiscal, date, portfolio, etc.
-module.exports = { required: ["fiscal", "quarter"], getAll };
+module.exports = { required: ["quarter", "fiscal_year_id", "fiscal_year"], getAll };
