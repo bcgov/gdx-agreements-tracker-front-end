@@ -20,8 +20,10 @@ controller.getReport = getReport;
 controller.Tab_15_rpt_P_QuarterlyBillingRequest = async (request, reply) => {
   try {
     // Get the data from the database.
-    const projectId = Number(request.query.project);
-    const fiscal = Number(request.query.fiscal);
+    const projectId = request.query.project
+      ? Number(request.query.project)
+      : Number(request.query.project_id);
+    const fiscal = Number(request.query.fiscal_year_id);
     const quarter = Number(request.query.quarter);
     const result = {
       project: await model.getProjectById(projectId),

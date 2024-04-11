@@ -18,6 +18,8 @@ const {
  * @returns {any[]}
  */
 const getDeliverableBudgets = (projectId, fiscal, quarter) => {
+  console.log("projectId1, fiscal1, quarter1", projectId, fiscal, quarter);
+
   return knex(`${projectBudgetTable} as pb`)
     .select("pd.deliverable_name", {
       amount: knex.raw(`SUM(pb.q${quarter}_amount::numeric::float8)`),
@@ -39,6 +41,7 @@ const getDeliverableBudgets = (projectId, fiscal, quarter) => {
  * @returns {any[]}
  */
 const getJournalVoucher = (projectId, fiscal, quarter) => {
+  console.log("projectId2, fiscal2, quarter2", projectId, fiscal, quarter);
   return knex(`${jvTable}`)
     .select("*")
     .where("project_id", projectId)
