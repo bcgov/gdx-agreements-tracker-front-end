@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Stack, Toolbar } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { apiAxios } from "utils";
 import { handleReportExport } from "utils/handleReportExport";
 import SummarizeIcon from "@mui/icons-material/Summarize";
@@ -10,7 +10,7 @@ export const ReportShorcut = ({
   currentRowApiUrl,
 }: {
   // reportConfig: { [key: string]: string | null };
-  reportConfig: any;
+  reportConfig: { [key: string]: string | null }[];
   currentRowApiUrl: string;
 }) => {
   const { handleSnackbar, snackbarOpen } = useSnackbar();
@@ -34,8 +34,8 @@ export const ReportShorcut = ({
     }
   };
   return (
-    <Stack direction="row" spacing={2} sx={{paddingBottom:"1rem"}}>
-      {reportConfig.map((config: any) => {
+    <Stack direction="row" spacing={2} sx={{ paddingBottom: "1rem" }}>
+      {reportConfig.map((config: { [key: string]: string | null }) => {
         return (
           <Button
             key={config.type}
