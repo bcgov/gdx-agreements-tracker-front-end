@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { apiAxios } from "utils";
 import { handleReportExport } from "utils/handleReportExport";
+import SummarizeIcon from "@mui/icons-material/Summarize";
 
 export const ReportShorcut = ({
   config,
@@ -23,12 +24,7 @@ export const ReportShorcut = ({
   };
 
   return (
-    <Button
-      onClick={generateReport}
-      color="success"
-      variant="outlined"
-      //   endIcon={<CheckCircle />}
-    >
+    <Button onClick={generateReport} color="success" variant="contained" endIcon={<SummarizeIcon />}>
       {config.buttonText}
     </Button>
   );

@@ -23,7 +23,7 @@ export const Billing = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={1}>
+      <Grid item xs={12}>
         {reportConfig.map((config) => {
           return (
             <ReportShorcut
