@@ -24,7 +24,12 @@ export const ReportShorcut = ({
   };
 
   return (
-    <Button onClick={generateReport} color="success" variant="contained" endIcon={<SummarizeIcon />}>
+    <Button
+      onClick={generateReport}
+      color="success"
+      variant="contained"
+      endIcon={<SummarizeIcon />}
+    >
       {config.buttonText}
     </Button>
   );
