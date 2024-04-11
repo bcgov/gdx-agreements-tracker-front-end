@@ -186,4 +186,4 @@ const getAll = async ({ fiscal, quarter, fiscal_year_id }) => {
 
 // Export the functions to be used in controller.
 //  required can be fiscal, date, portfolio, etc.
-module.exports = { required: ["quarter", "fiscal_year_id"], getAll };
+module.exports = { required: ["quarter", "fiscal_year_id", "fiscal_year"], getAll };
