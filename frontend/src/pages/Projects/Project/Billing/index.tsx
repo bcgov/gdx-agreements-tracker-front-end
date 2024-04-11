@@ -6,6 +6,9 @@ import { tableConfig } from "./tableConfig";
 import { FormConfig } from "./FormConfig";
 import useTitle from "hooks/useTitle";
 import { useEffect } from "react";
+import { ReportShorcut } from "components/ReportShorcut";
+import { Grid } from "@mui/material";
+import { reportConfig } from "./reportConfig";
 
 export const Billing = () => {
   const { updateTitle } = useTitle();
@@ -19,13 +22,28 @@ export const Billing = () => {
   const formControls: IFormControls = useFormControls();
 
   return (
-    <TableWithModal
-      tableName={"jv"}
-      tableConfig={tableConfig()}
-      formControls={formControls}
-      formConfig={FormConfig}
-      tableDataApiEndPoint={`projects/${projectId}/jv`}
-      formDataApiEndpoint={`/jv/${formControls.currentRowData?.id}`}
-    />
+    <Grid container spacing={2}>
+      <Grid item xs={1}>
+        {reportConfig.map((config) => {
+          return (
+            <ReportShorcut
+              key={config.type}
+              config={config}
+              currentRowApiUrl={`/jv/${formControls.currentRowData?.id}`}
+            />
+          );
+        })}
+      </Grid>
+      <Grid item xs={12}>
+        <TableWithModal
+          tableName={"jv"}
+          tableConfig={tableConfig()}
+          formControls={formControls}
+          formConfig={FormConfig}
+          tableDataApiEndPoint={`projects/${projectId}/jv`}
+          formDataApiEndpoint={`/jv/${formControls.currentRowData?.id}`}
+        />
+      </Grid>
+    </Grid>
   );
 };
