@@ -6,4 +6,11 @@ export const reportConfig = [
     exportType: "xlsx",
     buttonText: "ADI Export",
   },
+  {
+    templateType: "docx",
+    category: "individual_project_reports",
+    type: "Tab_15_rpt_P_QuarterlyBillingRequest",
+    exportType: "pdf",
+    buttonText: "Qtr Billing Request",
+  },
 ];
