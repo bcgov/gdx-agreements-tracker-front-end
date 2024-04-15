@@ -9,7 +9,7 @@ const getAll = {
         .prop("api_method", S.string())
         .prop("api_user", S.string())
         .prop("api_date", S.string())
-        .prop("api_body", S.object().additionalProperties(true))
+        .prop("api_body", S.anyOf([S.object().additionalProperties(true), S.null()]))
         .prop("api_url", S.string())
     )
   ),

@@ -27,7 +27,13 @@ const optionTablesModel = (request, id) => {
   };
 
   const deleteOne = () => {
-    return knex(tableName).where("id", id).del();
+    return knex(tableName)
+      .where("id", id)
+      .del()
+      .returning("*")
+      .then((result) => {
+        return result[0];
+      });
   };
 
   return { findAll, findById, updateOne, addOne, deleteOne };
