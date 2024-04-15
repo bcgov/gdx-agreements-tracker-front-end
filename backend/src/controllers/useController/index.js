@@ -154,7 +154,6 @@ const useController = (model, what, capabilityPrefix = null) => {
     const id = Number(request.params.id);
     try {
       const result = await model.removeOne(id);
-      console.log('result123', result)
       return (
         result || noQuery(reply, `The ${what.single} ${request.params.id} could not be deleted.`)
       );
