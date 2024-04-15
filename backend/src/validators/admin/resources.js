@@ -25,6 +25,7 @@ const getOne = {
       .prop("resource_last_name", S.string())
       .prop("subcontractor_id", Schema.Picker)
       .prop("supplier_id", Schema.Picker)
+      .prop("user_id", S.anyOf([S.string(), S.null()]))
   ),
 };
 

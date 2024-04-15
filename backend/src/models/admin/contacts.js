@@ -48,7 +48,13 @@ const addOne = (newContact) => {
 };
 
 const removeOne = (id) => {
-  return knex(table).where("id", id).del();
+  return knex(table)
+    .where("id", id)
+    .del()
+    .returning("*")
+    .then((result) => {
+      return result[0];
+    });
 };
 
 module.exports = {

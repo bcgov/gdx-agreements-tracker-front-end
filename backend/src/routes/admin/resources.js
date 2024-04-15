@@ -30,7 +30,7 @@ const routes = [
   {
     method: "DELETE",
     url: `/${what}/:id`,
-    schema: validators.deleteOne,
+    // schema: validators.deleteOne,
     handler: controller.deleteOne,
   },
 ];
