@@ -7,58 +7,49 @@ const contactRoleTable = `${dataBaseSchemas().data}.contact_role`;
 
 const findAllById = async (projectId) => {
   return knex
-    .columns(
-      { role_id: "cr.id" },
+    .with("combined_contacts", (qb) => {
+      qb.select(
+        "cp.id AS contact_project_id",
+        "cp.contact_id",
+        "cp.project_id",
+        "cp.contact_role",
+        knex.raw("c.last_name || ', ' || c.first_name AS contact_name")
+      )
+        .distinctOn("cp.contact_id", "cp.contact_role")
+        .from(`${table} as cp`)
+        .join(`${contactTable} as c`, "cp.contact_id", "c.id")
+        .where("cp.project_id", projectId);
+    })
+    .select(
+      "cr.id AS role_id",
       "cr.role_type",
-      {
-        contacts: knex.raw(
-          `CASE 
-          WHEN cp.contact_role = 6 THEN
-           json_build_object('value', c.id, 'label', c.last_name || ', ' || c.first_name)
-          ELSE 
-            CASE json_agg(cp.id)::text
-              WHEN '[null]' THEN '[]'
-              ELSE json_agg(json_strip_nulls(json_build_object('value', c.id, 'label', c.last_name || ', ' || c.first_name)))
-            END
-        END`
-        ),
-      },
-      { rows_to_lock: knex.raw(`array_agg(cp.id)`) }
+      knex.raw(`
+        CASE
+            WHEN jsonb_agg(jsonb_build_object('value', combined_contacts.contact_id, 'label', combined_contacts.contact_name)) = '[{"label": null, "value": null}]'::jsonb THEN
+                '[]'::json
+            WHEN cr.id = 6 THEN
+                (SELECT jsonb_build_object('value', cc.contact_id, 'label', cc.contact_name) FROM combined_contacts cc WHERE cc.contact_role = cr.id LIMIT 1)::json
+            ELSE
+                jsonb_agg(DISTINCT jsonb_build_object('value', combined_contacts.contact_id, 'label', combined_contacts.contact_name))::json
+        END AS contacts
+    `),
+      knex.raw("array_agg(DISTINCT combined_contacts.contact_project_id) AS rows_to_lock")
     )
-    .select()
     .from(`${contactRoleTable} as cr`)
-    .leftJoin(
-      `${table} as cp`,
-      knex.raw(`cp.contact_role = cr.id AND cp.project_id = ${projectId}`)
-    )
-    .leftJoin(`${contactTable} as c`, { "cp.contact_id": "c.id" })
-    .groupBy("cr.id", "cp.contact_role", "c.id");
+    .leftJoin("combined_contacts", "cr.id", "combined_contacts.contact_role")
+    .groupBy("cr.id", "cr.role_type");
 };
 
 // Update one.
-const updateOne = (body, projectId) => {
+const updateOne = (contacts, projectId) => {
   return knex.transaction(async (trx) => {
-    if (body.length > 0) {
-      // If there are any new rows to insert, insert them.
-      return trx(table)
-        .insert(body)
-        .onConflict(["contact_id", "project_id", "contact_role"])
-        .merge()
-        .returning("id")
-        .then((ids) => {
-          // Delete any rows that were not included in input.
-          return trx(table)
-            .whereNotIn(
-              "id",
-              ids.map((val) => val.id)
-            )
-            .andWhere("project_id", projectId)
-            .del();
-        });
-    } else {
-      // Otherwise, delete all rows belonging to project id.
-      return trx(table).where("project_id", projectId).del();
-    }
+    // First, delete all rows with the given project_id.
+    await trx(table).where("project_id", projectId).del();
+
+    // Then, insert the new rows.
+    const insertedIds = await trx(table).insert(contacts).returning("id");
+
+    return insertedIds;
   });
 };
 
