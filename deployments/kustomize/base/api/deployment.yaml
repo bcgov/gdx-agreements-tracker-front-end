@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       annotations:
-        alpha.image.policy.openshift.io/resolve-names: '*'
+        alpha.image.policy.openshift.io/resolve-names: "*"
       labels:
         connection: net-database-client
     spec:
@@ -38,5 +38,5 @@ spec:
               cpu: 100m
               memory: 100Mi
             limits:
-              cpu: 1
-              memory: 2Gi
+              cpu: "300m"
+              memory: 200Mi
