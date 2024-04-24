@@ -403,6 +403,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
         { field: "ministry_short_name", headerName: "Ministry Abrev" },
       ],
       projectId: Number(projectId),
+      noOptionsMessage:"No program area created in client coding section of this project."
     },
     {
       width: "full",
@@ -416,6 +417,8 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
         { field: "contract_number", headerName: "Contract #" },
       ],
       projectId: Number(projectId),
+      noOptionsMessage:"There are no contracts associated with this project."
+
     },
     {
       width: "half",
@@ -447,7 +450,6 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const rowsToLock = [query?.data?.data?.data?.id];
   const postUrl = `/projects/budget`;
   const updateUrl = `/projects/budget/${query?.data?.data?.data?.id}`;
-  const deleteUrl = `/projects/budget/${query}`;
 
   // validates that the total field does not exceed the detail_amount field
   const validationSchema = object({
@@ -490,7 +492,6 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
     rowsToLock,
     postUrl,
     updateUrl,
-    deleteUrl,
     formTitle,
   };
 };
