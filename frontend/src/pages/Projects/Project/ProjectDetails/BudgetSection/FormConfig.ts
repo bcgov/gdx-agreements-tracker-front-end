@@ -403,7 +403,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
         { field: "ministry_short_name", headerName: "Ministry Abrev" },
       ],
       projectId: Number(projectId),
-      noOptionsMessage:"No program area created in client coding section of this project."
+      noOptionsMessage: "No program area created in client coding section of this project.",
     },
     {
       width: "full",
@@ -417,8 +417,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
         { field: "contract_number", headerName: "Contract #" },
       ],
       projectId: Number(projectId),
-      noOptionsMessage:"There are no contracts associated with this project."
-
+      noOptionsMessage: "There are no contracts associated with this project.",
     },
     {
       width: "half",
