@@ -21,4 +21,8 @@ module.exports = {
   seeds: {
     directory: "./src/database/seeds",
   },
+  typeCast: (field, next) => {
+    if (field.type === "DATETIME") return field.string();
+    return next();
+  },
 };

@@ -1,4 +1,8 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // date format for the short year format - to be used in javascript.
 // the date format for database queries is defined in backend/src/models/reports/helpers/index.js
@@ -11,7 +15,8 @@ const DATE_FORMAT_SHORT_YEAR = "DD-MMM-YY";
  * @param   {string | unknown} date - date to be formatted
  * @returns {string}                - formatted date
  */
-const formatDate = (date) => date && dayjs(date).format(DATE_FORMAT_SHORT_YEAR);
+const formatDate = (date) =>
+  date && dayjs(date).tz("America/Vancouver").format(DATE_FORMAT_SHORT_YEAR);
 
 /**
  * Format a date to the format "dd-Mon-yy"
