@@ -16,7 +16,7 @@ const DATE_FORMAT_SHORT_YEAR = "DD-MMM-YY";
  * @returns {string}                - formatted date
  */
 
-//'Africa/Accra' sets the time for the date pickers to UTC Time.  Purpose for this is because Openshift is on UTC where this app is currently running from as per 04/25/2024
+//Purpose for this is because Openshift is on UTC where this app is currently running from as per 04/25/2024
 const formatDate = (date) => date && dayjs(date).utc().format(DATE_FORMAT_SHORT_YEAR);
 
 /**
