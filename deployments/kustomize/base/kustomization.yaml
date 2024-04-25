@@ -21,6 +21,7 @@ configMapGenerator:
       - SINGLE_SIGN_ON_API_TOKEN_HOST=secrets_single_sign_on_token_host
       - SINGLE_SIGN_ON_API_TOKEN_PATH=secrets_single_sign_on_token_path
       - SINGLE_SIGN_ON_API=secrets_single_sign_on_api
+      - TZ=UTC
     files:
       - postgresql.conf
 secretGenerator:
