@@ -15,8 +15,9 @@ const DATE_FORMAT_SHORT_YEAR = "DD-MMM-YY";
  * @param   {string | unknown} date - date to be formatted
  * @returns {string}                - formatted date
  */
-const formatDate = (date) =>
-  date && dayjs(date).tz("America/Vancouver").format(DATE_FORMAT_SHORT_YEAR);
+
+//Purpose for this is because Openshift is on UTC where this app is currently running from as per 04/25/2024
+const formatDate = (date) => date && dayjs(date).utc().format(DATE_FORMAT_SHORT_YEAR);
 
 /**
  * Format a date to the format "dd-Mon-yy"
