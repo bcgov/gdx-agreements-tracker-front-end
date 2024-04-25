@@ -118,9 +118,9 @@ export const FormInput = ({
               id={fieldName}
               label={fieldLabel}
               format={DATE_FORMAT_SHORT_YEAR}
-              value={null === fieldValue ? null : dayjs(fieldValue)}
+              value={null === fieldValue ? null : dayjs(fieldValue).utc()}
               onChange={(newValue: string) => {
-                const formatDate = newValue ? dayjs(newValue).format("YYYY-MM-DD") : null;
+                const formatDate = newValue ? dayjs(newValue).utc().format("YYYY-MM-DD") : null;
                 setFieldValue?.(fieldName, formatDate);
               }}
               sx={{
