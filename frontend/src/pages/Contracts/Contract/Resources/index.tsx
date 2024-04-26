@@ -19,11 +19,11 @@ import { useEffect } from "react";
 
 //** When a  supplier is chosen in the contract details section, that is the value used to filter the resources for the contract resource section.  Then depending  */
 export const ContractResources = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Contract Resources");
-  }, [updateTitle]);
+    updateSubTitle("Contract Resources");
+  }, [updateSubTitle]);
 
   const { contractId } = useParams();
 

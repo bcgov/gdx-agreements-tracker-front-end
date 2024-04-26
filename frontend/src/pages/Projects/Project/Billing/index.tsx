@@ -10,11 +10,11 @@ import { ReportShorcut } from "components/ReportShorcut";
 import { reportConfig } from "./reportConfig";
 
 export const Billing = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Project Billing");
-  }, [updateTitle]);
+    updateSubTitle("Project Billing");
+  }, [updateSubTitle]);
 
   const { projectId } = useParams();
 

@@ -10,11 +10,11 @@ import { Grid } from "@mui/material";
 import { Legend } from "components/Legend";
 
 export const Status = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Project Status");
-  }, [updateTitle]);
+    updateSubTitle("Project Status");
+  }, [updateSubTitle]);
 
   const { projectId } = useParams();
 

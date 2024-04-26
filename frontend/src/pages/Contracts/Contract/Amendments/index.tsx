@@ -18,11 +18,11 @@ import { useEffect } from "react";
  */
 
 export const Amendments = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Contract Amendments");
-  }, [updateTitle]);
+    updateSubTitle("Contract Amendments");
+  }, [updateSubTitle]);
 
   const { contractId } = useParams();
 

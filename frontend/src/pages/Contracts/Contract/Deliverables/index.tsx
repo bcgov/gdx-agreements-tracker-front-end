@@ -18,11 +18,11 @@ import { useEffect } from "react";
  */
 
 export const Deliverables = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Contract Deliverables");
-  }, [updateTitle]);
+    updateSubTitle("Contract Deliverables");
+  }, [updateSubTitle]);
 
   const { contractId } = useParams();
   const formControls: IFormControls = useFormControls();

@@ -4,6 +4,7 @@ import { IPageHeader } from "../../../types";
 import { SignoutButton } from "../../SignoutButton";
 import { TitleContext } from "context/TitleContext";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { SubTitleContext } from "context";
 const drawerWidth = 240;
 
 const appBarStyles = {
@@ -19,6 +20,7 @@ const titleStyles = {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const PageHeader = ({ handleDrawerToggle }: IPageHeader) => {
   const { title } = useContext(TitleContext);
+  const { subTitle } = useContext(SubTitleContext);
   return (
     <div>
       <AppBar sx={appBarStyles} role="page-header">
@@ -34,7 +36,7 @@ export const PageHeader = ({ handleDrawerToggle }: IPageHeader) => {
             <MenuOutlinedIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={titleStyles}>
-            {title}
+            {title} - {subTitle}
           </Typography>
           <SignoutButton />
         </Toolbar>

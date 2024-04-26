@@ -2,6 +2,9 @@ import { useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { IChipNav } from "types";
 import { ChipNav } from "../../../components/ChipNav";
+import { useAxios } from "hooks/useAxios";
+import useTitle from "hooks/useTitle";
+import { useEffect } from "react";
 
 /**
  * This reusable component renders the projects component
@@ -12,6 +15,22 @@ import { ChipNav } from "../../../components/ChipNav";
 
 export const Project = () => {
   const { projectId } = useParams();
+
+  // Queries
+  const { axiosAll } = useAxios();
+  const { updateTitle } = useTitle();
+
+  const getProject = async () => {
+    return await axiosAll()
+      .get(`projects/${projectId}`)
+      .then((projectData) => {
+        updateTitle(projectData?.data?.data?.project_number);
+      });
+  };
+
+  useEffect(() => {
+    getProject();
+  }, [projectId]);
 
   const chipNavLinks: IChipNav[] = [
     {

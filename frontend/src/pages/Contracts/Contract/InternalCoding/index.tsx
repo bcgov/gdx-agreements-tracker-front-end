@@ -18,11 +18,11 @@ import { useEffect } from "react";
  */
 
 export const InternalCoding = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Contract Internal Coding");
-  }, [updateTitle]);
+    updateSubTitle("Contract Internal Coding");
+  }, [updateSubTitle]);
 
   const { contractId } = useParams();
 

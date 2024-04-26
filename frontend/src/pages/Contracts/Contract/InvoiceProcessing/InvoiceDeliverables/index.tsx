@@ -18,11 +18,11 @@ import TitleCard from "components/TitleCard";
  */
 
 export const InvoiceDeliverables = ({ invoiceId, title }: { invoiceId: number; title: string }) => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Contract Invoice Deliverables");
-  }, [updateTitle]);
+    updateSubTitle("Contract Invoice Deliverables");
+  }, [updateSubTitle]);
 
   const formControls: IFormControls = useFormControls();
 

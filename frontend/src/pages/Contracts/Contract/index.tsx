@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { IChipNav } from "types";
 import { ChipNav } from "../../../components/ChipNav";
+import { useEffect } from "react";
+import useTitle from "hooks/useTitle";
+import { useAxios } from "hooks/useAxios";
 
 /**
  * This reusable component renders the contracts component
@@ -13,6 +16,21 @@ import { ChipNav } from "../../../components/ChipNav";
 
 export const Contract = () => {
   const { contractId } = useParams();
+  // Queries
+  const { axiosAll } = useAxios();
+  const { updateTitle } = useTitle();
+
+  const getContract = async () => {
+    return await axiosAll()
+      .get(`contracts/${contractId}`)
+      .then((contractData) => {
+        updateTitle(contractData?.data?.data?.contract_number);
+      });
+  };
+
+  useEffect(() => {
+    getContract();
+  }, [contractId]);
 
   const chipNavLinks: IChipNav[] = [
     {

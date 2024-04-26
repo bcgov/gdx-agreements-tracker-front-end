@@ -14,11 +14,11 @@ import { useEffect } from "react";
  */
 
 export const ContractDetails = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Contract Details");
-  }, [updateTitle]);
+    updateSubTitle("Contract Details");
+  }, [updateSubTitle]);
 
   const { contractId } = useParams();
 
