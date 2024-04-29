@@ -8,11 +8,11 @@ import useTitle from "hooks/useTitle";
 import { useEffect } from "react";
 
 export const LessonsLearned = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Project Lessons Learned");
-  }, [updateTitle]);
+    updateSubTitle("Project Lessons Learned");
+  }, [updateSubTitle]);
 
   const { projectId } = useParams();
 

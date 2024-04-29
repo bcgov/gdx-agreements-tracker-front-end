@@ -18,11 +18,11 @@ import { useEffect } from "react";
  */
 
 export const ChangeRequest = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Project Change Request");
-  }, [updateTitle]);
+    updateSubTitle("Project Change Request");
+  }, [updateSubTitle]);
 
   const { projectId } = useParams();
 

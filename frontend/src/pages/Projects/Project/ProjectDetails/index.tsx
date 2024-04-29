@@ -11,11 +11,11 @@ import { ProjectRegistrationSection } from "./ProjectRegistrationSection";
 /* This code exports a functional component called `ProjectDetails` that renders a series of
 `Accordion` components, each containing a different section of information related to a project. */
 export const ProjectDetails = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Project Details");
-  }, [updateTitle]);
+    updateSubTitle("Project Details");
+  }, [updateSubTitle]);
   return (
     <>
       <Accordion sectionTitle="Project Registration">

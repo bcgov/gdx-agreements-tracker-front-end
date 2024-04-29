@@ -21,11 +21,11 @@ import { useEffect } from "react";
  */
 
 export const InvoiceProcessing = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Contract Invoice Processing");
-  }, [updateTitle]);
+    updateSubTitle("Contract Invoice Processing");
+  }, [updateSubTitle]);
 
   const { contractId } = useParams();
 

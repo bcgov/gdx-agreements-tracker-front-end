@@ -34,7 +34,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>, invoic
       fieldLabel: "Resource Assignment",
       fieldName: "contract_resource_id",
       fieldType: "autocompleteTable",
-      pickerName: "contract_resource",
+      pickerName: "contract_resource_option",
       autocompleteTableColumns: [
         { field: "resource", headerName: "Resource" },
         { field: "fiscal", headerName: "Fiscal" },

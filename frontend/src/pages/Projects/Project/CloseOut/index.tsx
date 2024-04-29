@@ -9,11 +9,11 @@ import keycloak from "../../../../keycloak";
 import { Notify } from "./Notify";
 
 export const CloseOut = () => {
-  const { updateTitle } = useTitle();
+  const { updateSubTitle } = useTitle();
 
   useEffect(() => {
-    updateTitle("Close Out");
-  }, [updateTitle]);
+    updateSubTitle("Close Out");
+  }, [updateSubTitle]);
 
   const { projectId } = useParams();
 
