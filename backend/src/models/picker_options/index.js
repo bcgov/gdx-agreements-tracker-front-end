@@ -592,58 +592,77 @@ const tableLookupValues = (projectId, contractId, params) => {
   if (contractId) {
     pickerOptions.push(
       {
-        id: "contractresource",
-        name: "contract_resource",
-        title: "Contract Resource",
+        id: "cro",
+        name: "contract_resource_option",
+        title: "cro",
         description: "",
-        table: "data.contract_resource",
-        value: "contract_resource.id",
-        label: `(r.resource_last_name || ', ' || r.resource_first_name)`,
-        queryAdditions: getContractResourceQueryAdditions(contractId),
-        customDefinition: `
-        (SELECT COALESCE(json_agg(contres), '[]')
+        table: "",
+        value: "",
+        label: ``,
+        queryAdditions: "",
+        customDefinition: `(SELECT COALESCE(json_agg(cro), '[]')
         FROM (
-          SELECT
-            (r.resource_last_name || ', ' || r.resource_first_name) AS resource,
-            fy.fiscal_year,
-            cr.assignment_rate,
-            rt.resource_type as assignment_role,
-            total_invoiced.total_amount AS total_invoiced,
-            ((cr.assignment_rate * cr.hours) - amount_total.sum) AS remaining,
-            cr.id as value
-            FROM
-                data.contract_resource cr
-                JOIN data.resource r ON cr.resource_id = r.id
-                JOIN data.fiscal_year fy ON cr.fiscal = fy.id
-                JOIN data.supplier_rate sr on cr.supplier_rate_id = sr.id
-                JOIN data.resource_type rt on sr.resource_type_id = rt.id
-                LEFT JOIN (
-                  SELECT
-                      contract_resource_id,
-                      SUM(unit_amount * rate) AS sum
-                  FROM
-                      data.invoice_detail
-                  GROUP BY
-                      contract_resource_id
-                 ) AS amount_total ON amount_total.contract_resource_id = cr.id
-                LEFT JOIN (
-                    SELECT
-                        cr.fiscal,
-                        SUM(invd.unit_amount * invd.rate) AS total_amount
-                    FROM
-                        data.invoice_detail invd
-                    JOIN data.contract_resource cr ON invd.contract_resource_id = cr.id
-                    WHERE
-                      cr.contract_id = ${contractId}
-                      AND cr.fiscal = ${Number(params.fiscal_id)}
-                    GROUP BY
-                        cr.fiscal
-                ) AS total_invoiced ON cr.fiscal = total_invoiced.fiscal
-        WHERE
-            cr.contract_id = ${contractId}
-            AND cr.fiscal = ${Number(params.fiscal_id)}
-          ) AS contres)`,
+            SELECT concat(resource_last_name, ', ', resource_first_name) as label,
+			      res.id as value
+            FROM data.resource res
+            LEFT JOIN data.supplier sup ON sup.id = res.supplier_id
+            LEFT JOIN data.contract cont ON cont.id = ${contractId}
+            WHERE cont.supplier_id = sup.id
+        )cro)`,
       },
+      // {
+      //   id: "contractresource",
+      //   name: "contract_resource",
+      //   title: "Contract Resource",
+      //   description: "",
+      //   table: "data.contract_resource",
+      //   value: "contract_resource.id",
+      //   label: `(r.resource_last_name || ', ' || r.resource_first_name)`,
+      //   queryAdditions: getContractResourceQueryAdditions(contractId),
+      //   customDefinition: `
+      //   (SELECT COALESCE(json_agg(contres), '[]')
+      //   FROM (
+      //     SELECT
+      //       (r.resource_last_name || ', ' || r.resource_first_name) AS resource,
+      //       fy.fiscal_year,
+      //       cr.assignment_rate,
+      //       rt.resource_type as assignment_role,
+      //       total_invoiced.total_amount AS total_invoiced,
+      //       ((cr.assignment_rate * cr.hours) - amount_total.sum) AS remaining,
+      //       cr.id as value
+      //       FROM
+      //           data.contract_resource cr
+      //           JOIN data.resource r ON cr.resource_id = r.id
+      //           JOIN data.fiscal_year fy ON cr.fiscal = fy.id
+      //           JOIN data.supplier_rate sr on cr.supplier_rate_id = sr.id
+      //           JOIN data.resource_type rt on sr.resource_type_id = rt.id
+      //           LEFT JOIN (
+      //             SELECT
+      //                 contract_resource_id,
+      //                 SUM(unit_amount * rate) AS sum
+      //             FROM
+      //                 data.invoice_detail
+      //             GROUP BY
+      //                 contract_resource_id
+      //            ) AS amount_total ON amount_total.contract_resource_id = cr.id
+      //           LEFT JOIN (
+      //               SELECT
+      //                   cr.fiscal,
+      //                   SUM(invd.unit_amount * invd.rate) AS total_amount
+      //               FROM
+      //                   data.invoice_detail invd
+      //               JOIN data.contract_resource cr ON invd.contract_resource_id = cr.id
+      //               WHERE
+      //                 cr.contract_id = ${contractId}
+      //                 AND cr.fiscal = ${Number(params.fiscal_id)}
+      //               GROUP BY
+      //                   cr.fiscal
+      //           ) AS total_invoiced ON cr.fiscal = total_invoiced.fiscal
+      //   WHERE
+      //       cr.contract_id = ${contractId}
+      //       AND cr.fiscal = ${Number(params.fiscal_id)}
+      //     ) AS contres)`,
+      // },
       {
         id: "contractdeliverable",
         name: "contract_deliverable",
@@ -698,27 +717,27 @@ const getClientCodingQueryAdditions = (id) => {
   return query;
 };
 
-/**
- * Gets contract resource query additions.
- *
- * @param   {int}    id The contract id.
- * @returns {string}
- */
-const getContractResourceQueryAdditions = (id) => {
-  let query = `
-    LEFT JOIN data.resource AS r on contract_resource.resource_id = r.id
-    ORDER BY label ASC
-    `;
-  if (Number(id) > 0) {
-    query = `
-      LEFT JOIN data.resource AS r on contract_resource.resource_id = r.id
-      WHERE contract_resource.contract_id = ${Number(id)}
-      GROUP BY label, value
-      ORDER BY label ASC
-      `;
-  }
-  return query;
-};
+// /**
+//  * Gets contract resource query additions.
+//  *
+//  * @param   {int}    id The contract id.
+//  * @returns {string}
+//  */
+// const getContractResourceQueryAdditions = (id) => {
+//   let query = `
+//     LEFT JOIN data.resource AS r on contract_resource.resource_id = r.id
+//     ORDER BY label ASC
+//     `;
+//   if (Number(id) > 0) {
+//     query = `
+//       LEFT JOIN data.resource AS r on contract_resource.resource_id = r.id
+//       WHERE contract_resource.contract_id = ${Number(id)}
+//       GROUP BY label, value
+//       ORDER BY label ASC
+//       `;
+//   }
+//   return query;
+// };
 
 /**
  * Gets contract deliverable query additions.

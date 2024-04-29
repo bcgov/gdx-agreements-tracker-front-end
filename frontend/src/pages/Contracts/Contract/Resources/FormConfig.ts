@@ -50,8 +50,9 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       fieldLabel: "Resource",
       fieldName: "resource_id",
       fieldType: "select",
-      pickerName: "resource_option",
+      pickerName: "contract_resource_option",
       required: true,
+      contractId: Number(contractId),
     },
     {
       width: "half",
