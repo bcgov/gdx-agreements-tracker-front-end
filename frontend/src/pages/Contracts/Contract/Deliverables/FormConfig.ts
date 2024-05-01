@@ -19,6 +19,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
           value: query?.data?.data?.data?.is_expense,
           title: "Expense",
           width: "half",
+          type: "checkbox",
         },
         {
           value: query?.data?.data?.data?.description,
@@ -41,7 +42,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
           width: "half",
         },
         {
-          value: query?.data?.data?.data?.project_deliverable_id.label,
+          value: query?.data?.data?.data?.project_deliverable_id.deliverable_name,
           title: "Project Deliverable",
           width: "half",
         },

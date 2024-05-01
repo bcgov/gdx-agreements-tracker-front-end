@@ -31,14 +31,14 @@ const findById = (id) => {
       `),
       project_deliverable_id: knex.raw(`
         (SELECT json_build_object(
-          'deliverable_name', cd.deliverable_name,
-          'deliverable_amount', cd.deliverable_amount,
-          'deliverable_status', cd.deliverable_status,
-          'label', coalesce(cd.deliverable_name, ''),
-          'value', cd.project_deliverable_id
+          'deliverable_name', pd.deliverable_name,
+          'deliverable_amount', pd.deliverable_amount,
+          'deliverable_status', pd.deliverable_status,
+          'value', pd.id
         ))
       `),
       fiscal: knex.raw("( SELECT json_build_object('value', fy.id, 'label', fy.fiscal_year))"),
+      id: "cd.id",
     })
     .from(`${table} as cd`)
     .join(`${fiscalTable} as fy`, { "cd.fiscal": "fy.id" })

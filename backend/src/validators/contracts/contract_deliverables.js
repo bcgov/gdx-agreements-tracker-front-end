@@ -17,8 +17,14 @@ const body = S.object()
   .prop("description", Schema.ShortString)
   .prop("fiscal", S.number())
   .prop("is_expense", S.boolean())
-  .prop("project_deliverable_id", S.number());
-
+  .prop(
+    "project_deliverable_id",
+    S.object()
+      .prop("deliverable_name", S.string())
+      .prop("deliverable_amount", Schema.Money)
+      .prop("deliverable_status", S.string())
+      .prop("value", S.number())
+  );
 const requestBody = S.object()
   .prop("comments", Schema.ShortString)
   .prop("completion_date", Schema.Date)
@@ -44,6 +50,7 @@ const getOne = {
       .prop("resource_id", Schema.Picker)
       .prop("assignment_rate", Schema.Money)
       .prop("contract_id", Schema.IdParam)
+      .prop("id", S.number())
   ),
 };
 
