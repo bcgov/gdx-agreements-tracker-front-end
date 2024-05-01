@@ -12,7 +12,7 @@ const routes = [
   {
     method: "GET",
     url: `/projects/${what}/:id`,
-    schema: validators.getOne,
+    // schema: validators.getOne,
     handler: controller.getOne,
   },
   {
