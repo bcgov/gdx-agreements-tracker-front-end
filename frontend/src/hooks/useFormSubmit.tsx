@@ -24,7 +24,11 @@ export const useFormSubmit = () => {
     } else {
       Object.keys(changedValues).forEach((key) => {
         if (changedValues[key] !== currentRowData[key]) {
-          if ("object" === typeof changedValues[key] && null !== changedValues[key] && "value" in changedValues[key]) {
+          if (
+            "object" === typeof changedValues[key] &&
+            null !== changedValues[key] &&
+            "value" in changedValues[key]
+          ) {
             deltaChanges[key] = changedValues[key].value;
           } else {
             deltaChanges[key] = changedValues[key];

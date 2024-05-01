@@ -26,7 +26,7 @@ export const PercentField = ({
       decimalPlacesShownOnFocus: 0,
       selectOnFocus: true,
       rawValueDivisor: 100, // Divide by 100 when reading value
-      modifyValueOnWheel: false
+      modifyValueOnWheel: false,
     });
   }, [styles, id]);
 
