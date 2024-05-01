@@ -24,7 +24,7 @@ const routes = [
   {
     method: "GET",
     url: `/${what}/contract/:id`,
-    // schema: validators.getAllById,
+    schema: validators.getAllById,
     handler: controller.findAllByContract,
   },
 ];
