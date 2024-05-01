@@ -44,6 +44,7 @@ const getOne = {
       .prop("resource_id", Schema.Picker)
       .prop("assignment_rate", Schema.Money)
       .prop("contract_id", Schema.IdParam)
+      .prop("id", S.number())
   ),
 };
 

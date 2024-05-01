@@ -39,6 +39,7 @@ const findById = (id) => {
         ))
       `),
       fiscal: knex.raw("( SELECT json_build_object('value', fy.id, 'label', fy.fiscal_year))"),
+      id: "cd.id",
     })
     .from(`${table} as cd`)
     .join(`${fiscalTable} as fy`, { "cd.fiscal": "fy.id" })
