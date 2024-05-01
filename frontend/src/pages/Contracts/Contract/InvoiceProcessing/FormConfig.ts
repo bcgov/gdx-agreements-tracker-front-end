@@ -14,19 +14,23 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
         { width: "half", title: "Invoice Number", value: query?.data?.data?.data?.invoice_number },
         {
           width: "half",
-          title: "Received Date",
-          value: formatDate(query?.data?.data?.data?.received_date),
+          title: "Invoice Date",
+          value: formatDate(query?.data?.data?.data?.invoice_date),
         },
         {
           width: "half",
-          title: "Invoice Date",
-          value: formatDate(query?.data?.data?.data?.invoice_date),
+          title: "Received Date",
+          value: formatDate(query?.data?.data?.data?.received_date),
         },
         { width: "half", title: "Due Date", value: formatDate(query?.data?.data?.data?.due_date) },
         { width: "half", title: "Billing Period", value: query?.data?.data?.data?.billing_period },
         { width: "half", title: "Fiscal Year", value: query?.data?.data?.data?.fiscal?.label },
-        { width: "half", title: "Invoice Total", value: query?.data?.data?.data?.invoice_total },
-        { width: "half", title: "GL", value: query?.data?.data?.data?.is_gl },
+        {
+          width: "half",
+          title: "General Ledger",
+          value: query?.data?.data?.data?.is_gl,
+          type: "checkbox",
+        },
         { width: "full", title: "Notes", value: query?.data?.data?.data?.notes },
       ];
 
@@ -60,12 +64,6 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       width: "half",
       pickerName: "fiscal_year_option",
       required: true,
-    },
-    {
-      width: "half",
-      fieldLabel: "Invoice Total",
-      fieldName: "invoice_total",
-      fieldType: "readonly",
     },
     {
       width: "half",
@@ -105,7 +103,6 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const rowsToLock = rowId ? [rowId] : [];
   const postUrl = `/contracts/${contractId}/invoices`;
   const updateUrl = `/invoices/${rowId}`;
-  const deleteUrl = `/invoices/${query}`;
 
   const formTitle = "Contract Invoice Processing";
 
@@ -116,7 +113,6 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
     rowsToLock,
     postUrl,
     updateUrl,
-    deleteUrl,
     validationSchema,
     formTitle,
   };
