@@ -11,7 +11,7 @@ const getAll = {
         .prop("responsibility", S.string())
         .prop("service_line", S.string())
         .prop("stob", S.string())
-        .prop("CAS Project #", S.string())
+        .prop("cas_project_number", S.string())
         .prop("qualified_receiver", S.string())
         .prop("recovery_info", S.string())
     )
@@ -40,11 +40,13 @@ const getOne = {
 };
 
 const addUpdateBody = S.object()
+  .additionalProperties(false)
   .prop("contract_id", Schema.Id)
   .prop("portfolio_id", Schema.Id)
   .prop("stob", Schema.ShortString)
   .prop("cas_project_number", Schema.ShortString)
-  .prop("qualified_receiver", Schema.ShortString);
+  .prop("qualified_receiver", Schema.ShortString)
+  .prop("recovery_info", Schema.ShortString);
 
 const updateOne = {
   params: Schema.IdParam,

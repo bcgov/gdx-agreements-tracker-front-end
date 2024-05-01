@@ -103,7 +103,6 @@ const addUpdateBody = S.object()
   .prop("q4_amount", S.string())
   .prop("q4_recovered", S.boolean())
   .prop("fiscal", S.anyOf([S.number(), S.null()]))
-  .prop("service_line", S.string())
   .prop("notes", S.anyOf([S.string(), S.null()]))
   .prop("project_deliverable_id", S.anyOf([S.number(), S.null()]))
   .prop("detail_amount", S.string())
@@ -112,9 +111,7 @@ const addUpdateBody = S.object()
   .prop("recovery_area", S.string())
   .prop("stob", S.string())
   .prop("client_coding_id", S.anyOf([S.number(), S.null()]))
-  .prop("contract_id", S.anyOf([S.number(), S.null()]))
-  .prop("responsibility_centre", S.string())
-  .prop("service_line", S.string());
+  .prop("contract_id", S.anyOf([S.number(), S.null()]));
 
 const updateOne = {
   params: Schema.IdParam,
