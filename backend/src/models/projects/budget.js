@@ -147,7 +147,7 @@ const findProjectBudgetByFiscal = (projectId) => {
     .from(`${projectBudgetTable} as pb`)
     .leftJoin(`${projectDeliverableTable} as pd`, { "pb.project_deliverable_id": "pd.id" })
     .join(`${fiscalYearTable} as fy`, "pd.fiscal", "fy.id")
-    .where("pd.project_id", 399)
+    .where("pd.project_id", projectId)
     .groupBy("fy.fiscal_year");
 };
 
