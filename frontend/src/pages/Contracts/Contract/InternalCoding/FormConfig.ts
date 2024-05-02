@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
 import { IEditField } from "types";
 import { useParams } from "react-router-dom";
+import { getResponsabilityServiceLine } from "utils/getResponsabilityServiceLine";
 
 export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
   const { contractId } = useParams();
@@ -53,6 +54,7 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       fieldLabel: "Portfolio",
       width: "half",
       pickerName: "portfolio_option",
+      customOnChange: getResponsabilityServiceLine,
     },
     {
       fieldName: "cas_project_number",

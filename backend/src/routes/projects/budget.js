@@ -48,7 +48,7 @@ const routes = [
   },
   {
     method: "GET",
-    url: `/project/${what}/responsibilityservice/:id`,
+    url: `/responsibilityservice/:id`,
     // schema: validators.recoverablesBreakdown,
     handler: controller.getResponsibilityServiceLine,
   },

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { object, string, number } from "yup";
 import { FormikValues } from "formik";
 import _ from "lodash";
-import { apiAxios } from "utils";
+import { getResponsabilityServiceLine } from "utils/getResponsabilityServiceLine";
 
 interface IRecoveredQuarterAmounts {
   q1_amount: string;
@@ -109,33 +109,6 @@ const getRecoveredTotalsByQuarter = async ({
   const toCurrency = sumOfQuarters.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
   setFieldValue("total", toCurrency);
-};
-
-const getResponsabilityServiceLine = async ({
-  newValue,
-  setFieldValue,
-}: {
-  newValue: { value: string | number };
-  setFieldValue: Function;
-}) => {
-  const getCall = async () => {
-    const results = await apiAxios()
-      .get(`/project/budget/responsibilityservice/${newValue?.value}`)
-      .then((responsabilityServiceLine) => {
-        return responsabilityServiceLine;
-      });
-    return results.data.data[0];
-  };
-
-  // Queries
-
-  if (newValue) {
-    return getCall().then((response) => {
-      setFieldValue("responsibility_centre", response.responsibility_centre);
-      setFieldValue("service_line", response.service_line);
-    });
-  }
-  return "there was no portfolio ID provided";
 };
 
 /**
