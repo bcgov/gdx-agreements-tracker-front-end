@@ -96,7 +96,6 @@ const getDataFromModel = async (query, model, reply) => {
   const before = performance.now();
   const result = await model.getAll(query);
   const after = performance.now();
-
   // todo: remove this debugging once we have MVP ~ around Mid-September, 2023
   if ("development" === env) {
     log.warn(`

@@ -341,6 +341,7 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
         parameters: [
           { label: "fiscal", required: true },
           { label: "quarter", required: true },
+          { label: "project", required: true },
         ],
         exportPDF: false,
         exportXLSX: true,
