@@ -33,7 +33,6 @@ const findAll = () => {
       "port.portfolio_name",
       { project_manager: knex.raw("c.last_name || ', ' || c.first_name") },
       { registration_date: knex.raw(`p.initiation_date`) },
-      { end_date: knex.raw(`p.agreement_end_date`) },
       { status: "p.project_status" },
     ])
     .select()
@@ -52,7 +51,6 @@ const findById = (id) => {
       "p.id",
       "p.project_number",
       "p.project_name",
-      "p.description",
       "p.project_goals",
       { version: "p.project_version" },
       { project_manager: knex.raw("c.last_name || ', ' || c.first_name") },
@@ -60,7 +58,6 @@ const findById = (id) => {
       { portfolio: "p.portfolio_id" },
       { ministry_id: "p.ministry_id" },
       { registration_date: knex.raw(`p.initiation_date`) },
-      { end_date: knex.raw(`p.agreement_end_date`) },
       knex.raw("planned_budget"),
       knex.raw("total_project_budget"),
       knex.raw("recoverable_amount")
