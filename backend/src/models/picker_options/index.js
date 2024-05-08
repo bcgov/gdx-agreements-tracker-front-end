@@ -543,9 +543,9 @@ const tableLookupValues = (projectId, contractId, params) => {
                 cc.program_area,
                 con.first_name || ' ' || con.last_name AS financial_contact_name,
                 min.ministry_short_name,
-                pb.client_coding_id AS value
-              FROM data.project_budget pb
-              LEFT JOIN data.client_coding cc ON pb.client_coding_id = cc.id
+                cc.id AS value				
+              FROM data.client_coding cc
+              LEFT JOIN data.project_budget pb ON pb.client_coding_id = cc.id
               LEFT JOIN data.contact con ON cc.contact_id = con.id
               LEFT JOIN data.ministry min ON con.ministry_id = min.id
               WHERE cc.project_id = ${projectId}
