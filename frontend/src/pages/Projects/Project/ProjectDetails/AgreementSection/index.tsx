@@ -23,7 +23,7 @@ export const AgreementSection = () => {
         formControls={formControls}
         tableName={"projects"}
         formConfig={FormConfig}
-        formDataApiEndpoint={`/projects/${projectId}`}
+        formDataApiEndpoint={`/projects/${projectId}/agreement`}
       />
       <TotalsDisplay
         apiEndPoint={`/projects/${projectId}/budget/recoverablesbreakdown`}
