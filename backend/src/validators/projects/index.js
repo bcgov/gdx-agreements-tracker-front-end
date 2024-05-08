@@ -42,12 +42,6 @@ const getOne = {
       .prop("total_project_budget", S.string())
       .prop("recoverable", Schema.Picker)
       .prop("recoverable_amount", S.string())
-      .prop("agreement_type", Schema.Picker)
-      .prop("agreement_start_date", S.anyOf([S.string(), S.null()]))
-      .prop("agreement_signed_date", S.anyOf([S.string(), S.null()]))
-      .prop("agreement_end_date", S.anyOf([S.string(), S.null()]))
-      .prop("description", S.string())
-      .prop("notes", S.anyOf([S.string(), S.null()]))
       .prop(
         "contracts",
         S.array().items(S.object().prop("id", S.number()).prop("co_number", S.string()))
@@ -87,13 +81,6 @@ const addUpdateBody = S.object()
   .prop("total_project_budget", S.string())
   .prop("recoverable", S.string())
   .prop("recoverable_amount", S.string())
-  // Agreement
-  .prop("agreement_type", S.string())
-  .prop("agreement_start_date", S.anyOf([S.null(), Schema.Date]))
-  .prop("agreement_signed_date", S.anyOf([S.null(), Schema.Date]))
-  .prop("agreement_end_date", S.anyOf([S.null(), Schema.Date]))
-  .prop("description", S.string())
-  .prop("notes", S.string())
   // Close Out
   .prop("close_out_date", S.anyOf([S.null(), Schema.Date]))
   .prop("completed_by_contact_id", Schema.Id)

@@ -73,10 +73,9 @@ export const FormConfig = (query: AxiosResponse | undefined) => {
     },
   ];
 
-  const postUrl = "/projects";
-  const updateUrl = `/projects/${projectId}`;
+  const updateUrl = `/projects/${projectId}/agreement`;
 
   const rowsToLock = [Number(projectId)];
 
-  return { readFields, editFields, postUrl, updateUrl, rowsToLock };
+  return { readFields, editFields, updateUrl, rowsToLock };
 };
