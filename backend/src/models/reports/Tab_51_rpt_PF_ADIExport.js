@@ -152,29 +152,32 @@ const queries = {
   fiscal: (fiscal) =>
     knex("fiscal_year").select("fiscal_year").where("fiscal_year.id", fiscal).first(),
 
-  report: (fiscal, quarter) =>
+  report: (fiscal, quarter, project_id) =>
     knex
       .select("*")
       .fromRaw(`(${subquery}) as q`)
-      .where({ "q.fiscal": fiscal, "q.quarter": quarter }),
+      .where({ "q.fiscal": fiscal, "q.quarter": quarter, "q.project_id": project_id }),
 };
 
 /**
  * Retrieve and process data from queries to create a structured result object.
  *
- * @param   {object} options         - Options object containing fiscal year.
- * @param   {string} options.fiscal  - The fiscal year to retrieve data for.
- * @param   {string} options.quarter - The fiscal year to retrieve data for.
- * @returns {object}                 - An object containing fiscal year, report, and report total.
+ * @param   {object} options            - Options object containing fiscal year.
+ * @param   {string} options.fiscal     - The fiscal year to retrieve data for.
+ * @param   {string} options.quarter    - The fiscal year to retrieve data for.
+ * @param            options.project_id - The project id to filter on project id.  This param may be called project.
+ * @param            options.project    - The project id to filter on project id.  This param may be called project_id.
+ * @returns {object}                    - An object containing fiscal year, report, and report total.
  */
 // add other parameters if needed, like quarter, portfolio, date etc.
-const getAll = async ({ fiscal, quarter, fiscal_year_id }) => {
+const getAll = async ({ fiscal, quarter, fiscal_year_id, project_id, project }) => {
   try {
     // Await all promises in parallel
     const fiscalValue = fiscal ? fiscal : fiscal_year_id;
+    const projectValue = project ? project : project_id;
     const [{ fiscal_year }, report] = await Promise.all([
       queries.fiscal(fiscalValue),
-      queries.report(fiscalValue, quarter),
+      queries.report(fiscalValue, quarter, projectValue),
     ]);
 
     return { fiscal_year, report };

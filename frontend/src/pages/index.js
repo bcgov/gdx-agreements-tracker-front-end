@@ -6,4 +6,3 @@ export { PageNotFound } from "./PageNotFound";
 export { Projects } from "./Projects";
 export { Project } from "./Projects/Project";
 export { Reports } from "./Reports";
-export { Report } from "./Reports/Report";

@@ -26,7 +26,7 @@ export const SidebarMenu: React.FC = () => {
     <StyledSidebarBox>
       <Box p="12px">
         <Typography variant="h6" color="primary.contrastText">
-          GDX Agreements Tracker``
+          GDX Agreements Tracker
         </Typography>
       </Box>
       <StyledSidebarHorizontalRule />
