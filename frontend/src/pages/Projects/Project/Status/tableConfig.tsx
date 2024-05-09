@@ -42,5 +42,11 @@ export const tableConfig = () => {
     },
   ];
 
-  return { tableColumns };
+  const initialState = {
+    sorting: {
+      sortModel: [{ field: "status_date", sort: "desc" }],
+    },
+  };
+
+  return { tableColumns, initialState };
 };
