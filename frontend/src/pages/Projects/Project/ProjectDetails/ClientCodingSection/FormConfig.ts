@@ -98,7 +98,6 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
       fieldName: "contact_id",
       fieldType: "select",
       pickerName: "contact_option",
-      required: true,
     },
     {
       width: "full",

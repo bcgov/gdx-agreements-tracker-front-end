@@ -263,6 +263,24 @@ const tableLookupValues = (projectId, contractId, params) => {
       queryAdditions: `WHERE last_name IS NOT NULL`,
     },
     {
+      id: "intcon",
+      name: "internal_coding_contact_option",
+      title: "Contact",
+      description: "",
+      table: "data.contact",
+      value: `id`,
+      label: `concat(contact.last_name, ', ', contact.first_name)`,
+      queryAdditions: ``,
+      customDefinition: `(SELECT COALESCE(json_agg(internalCodingContacts), '[]')
+      FROM(
+        SELECT
+        concat(contact.last_name, ', ', contact.first_name) as label,
+        concat(contact.last_name, ', ', contact.first_name) as value
+        FROM data.contact
+        ORDER BY id ASC
+        ) internalCodingContacts)`,
+    },
+    {
       id: "proj",
       name: "project_option",
       title: "Projects",

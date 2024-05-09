@@ -35,7 +35,7 @@ const findById = (codingId) => {
     .columns({
       id: "ic.id",
       portfolio_id: knex.raw(
-        "( SELECT json_build_object('value', po.id, 'label', po.portfolio_name))"
+        "( SELECT json_build_object('value', po.id, 'label', COALESCE(po.portfolio_name,'')))"
       ),
       responsibility: "po.responsibility",
       service_line: "po.service_line",
