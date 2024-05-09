@@ -620,6 +620,89 @@ const tableLookupValues = (projectId, contractId, params) => {
         )cro)`,
       },
       {
+        id: "cro",
+        name: "contract_invoice_resource_option",
+        title: "cro",
+        description: "",
+        table: "",
+        value: "",
+        label: ``,
+        queryAdditions: "",
+        customDefinition: `
+        (SELECT COALESCE(json_agg(contres), '[]')
+        FROM (
+          SELECT
+            (r.resource_last_name || ', ' || r.resource_first_name) AS resource,
+            fy.fiscal_year,
+            cr.assignment_rate,
+            rt.resource_type as assignment_role,
+            total_invoiced.total_amount AS total_invoiced,
+            ((cr.assignment_rate * cr.hours) - amount_total.sum) AS remaining,
+            cr.id as value
+            FROM
+                data.contract_resource cr
+                JOIN data.resource r ON cr.resource_id = r.id
+                JOIN data.fiscal_year fy ON cr.fiscal = fy.id
+                JOIN data.supplier_rate sr on cr.supplier_rate_id = sr.id 
+                JOIN data.resource_type rt on sr.resource_type_id = rt.id
+                LEFT JOIN (
+                  SELECT
+                      contract_resource_id,
+                      SUM(unit_amount * rate) AS sum
+                  FROM
+                      data.invoice_detail
+                  GROUP BY
+                      contract_resource_id
+                 ) AS amount_total ON amount_total.contract_resource_id = cr.id
+                LEFT JOIN (
+                    SELECT
+                        cr.fiscal,
+                        SUM(invd.unit_amount * invd.rate) AS total_amount
+                    FROM
+                        data.invoice_detail invd
+                    JOIN data.contract_resource cr ON invd.contract_resource_id = cr.id
+                    WHERE
+                      cr.contract_id = ${contractId}
+                      AND cr.fiscal = ${Number(params.fiscal_id)}
+                    GROUP BY
+                        cr.fiscal
+                ) AS total_invoiced ON cr.fiscal = total_invoiced.fiscal
+        WHERE
+            cr.contract_id = ${contractId}
+            AND cr.fiscal = ${Number(params.fiscal_id)}
+          ) AS contres)`,
+      },
+      {
+        id: "contractdeliverable",
+        name: "contract_deliverable",
+        title: "Contract Deliverable",
+        description: "",
+        table: "data.contract_deliverable",
+        value: "contract_deliverable.id",
+        label: `contract_deliverable.deliverable_name`,
+        queryAdditions: getContractDeliverableQueryAdditions(contractId),
+      },
+      {
+        id: "projdel",
+        name: "project_deliverable_option",
+        title: "Project Deliverable",
+        description: `The Deliverable details for this project contract#${contractId}`,
+        table: "data.contract_deliverable",
+        value: "id",
+        label: "label",
+        queryAdditions: "",
+        customDefinition: `(SELECT COALESCE(json_agg(projdel), '[]')
+        FROM (
+          SELECT
+            cd.deliverable_name,
+            cd.deliverable_amount,
+            cd.deliverable_status,
+            cd.project_deliverable_id
+          FROM data.contract_deliverable AS cd
+          WHERE cd.contract_id = ${contractId}
+        ) AS projdel)`,
+      },
+      {
         id: "contractdeliverable",
         name: "contract_deliverable",
         title: "Contract Deliverable",
