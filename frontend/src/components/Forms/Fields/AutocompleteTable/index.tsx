@@ -110,7 +110,7 @@ export const AutocompleteTable: FC<IAutocompleteTable> = ({
                   key !== "value" && (
                     <TableCell
                       key={index}
-                      sx={{ maxWidth: 250, minWidth: 250, display: "flex", border: "none" }}
+                      sx={{ maxWidth: 100, minWidth: 100, display: "flex", border: "none" }}
                       component="th"
                       scope="row"
                     >
