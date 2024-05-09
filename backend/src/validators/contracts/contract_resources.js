@@ -37,8 +37,8 @@ const getOne = {
       .prop("supplier_rate_id", Schema.Picker)
       .prop("hours", S.number())
       .prop("fees_for_resource", Schema.Money)
-      .prop("start_date", S.string())
-      .prop("end_date", S.string())
+      .prop("start_date", S.anyOf([S.string(), S.null()]))
+      .prop("end_date", S.anyOf([S.string(), S.null()]))
   ),
 };
 
@@ -48,8 +48,8 @@ const addUpdateBody = S.object()
   .prop("supplier_rate_id", Schema.Id)
   .prop("assignment_rate", Schema.Money)
   .prop("hours", S.number())
-  .prop("start_date", Schema.Date)
-  .prop("end_date", Schema.Date);
+  .prop("start_date", S.anyOf([S.null(), Schema.Date]))
+  .prop("end_date", S.anyOf([S.null(), Schema.Date]));
 
 const updateOne = {
   params: Schema.IdParam,

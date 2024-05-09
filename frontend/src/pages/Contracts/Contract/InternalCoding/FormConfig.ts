@@ -82,7 +82,8 @@ export const FormConfig = (query: UseQueryResult<AxiosResponse, unknown>) => {
     },
     {
       fieldName: "qualified_receiver",
-      fieldType: "singleText",
+      fieldType: "select",
+      pickerName: "internal_coding_contact_option",
       fieldLabel: "Qualified Receiver",
       width: "half",
     },
