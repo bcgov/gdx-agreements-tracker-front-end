@@ -110,14 +110,8 @@ SELECT p.grp,
        END                            proj,
        '000000'                       loc,
        '0000'                         fut,
-       CASE
-         WHEN p.grp IS NULL THEN Sum(amount)
-         ELSE NULL
-       END                            debit,
-       CASE
-         WHEN p.grp IS NOT NULL THEN Sum(amount)
-         ELSE NULL
-       END                            credit,
+       CASE WHEN p.grp IS NULL THEN CAST(sum(amount::numeric) AS FLOAT) ELSE NULL END debit,
+       CASE WHEN p.grp IS NOT NULL THEN CAST(sum(amount::numeric) AS FLOAT) ELSE NULL END credit,
        'Q'
        || CAST(pb.quarter AS TEXT)
        || ' '
@@ -197,7 +191,6 @@ const getAll = async ({ fiscal, quarter, fiscal_year_id, project_id, project }) 
       queries.fiscal(fiscalValue),
       queries.report(fiscalValue, quarter, projectValue),
     ]);
-
     return { fiscal_year, report };
   } catch (error) {
     log.error(error);
