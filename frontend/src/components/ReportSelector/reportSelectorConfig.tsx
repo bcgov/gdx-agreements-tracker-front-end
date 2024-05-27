@@ -12,7 +12,7 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
           "Runs by Project #, shows deliverable amounts, their budgets, amounts recovered to date, balance remaining. Shows breakdown across fiscals, any change requests, any contracts associated with the project and amounts invoiced/remaining on the contracts.",
         parameters: [{ label: "project", required: true }],
         exportPDF: true,
-        exportXLSX: false,
+        exportXLSX: true,
       },
       {
         value: "Tab_15_rpt_P_QuarterlyBillingRequest",

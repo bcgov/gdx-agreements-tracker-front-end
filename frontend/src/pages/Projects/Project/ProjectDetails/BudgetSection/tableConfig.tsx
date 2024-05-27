@@ -21,7 +21,7 @@ export const tableConfig = () => {
     },
     {
       field: "detail_amount",
-      headerName: "Detail Amount",
+      headerName: "Deliverable Amount",
       flex: largeFlex,
       renderHeader: (): JSX.Element => LineBreak("Detail", "Amount"),
       sortComparator: sortComparatorByCurrency(),

@@ -32,7 +32,7 @@ controller.Tab_14_rpt_P_BudgetSummary = async (request, reply) => {
       report_date: await getCurrentDate(),
     };
 
-    const body = await getDocumentApiBody(result, "Tab_14_rpt_P_BudgetSummary.docx");
+    const body = await getDocumentApiBody(result, "Tab_14_rpt_P_BudgetSummary.xlsx");
     const pdf = await cdogs.api.post("/template/render", body, pdfConfig);
 
     // Inject the pdf data into the request object
