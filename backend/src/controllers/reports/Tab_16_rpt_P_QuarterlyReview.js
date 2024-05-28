@@ -10,6 +10,9 @@ const cdogs = useCommonComponents("cdogs");
 const { getReport, getDocumentApiBody, pdfConfig, getCurrentDate } = utils;
 controller.getReport = getReport;
 
+// Utilities
+const { validateQueryParameters } = require("./helpers");
+
 /**
  * Get a Project rollup Report for a specific array of portfolio.
  *
@@ -21,6 +24,7 @@ controller.Tab_16_rpt_P_QuarterlyReview = async (request, reply) => {
   try {
     // Get the data from the database.
     const projectId = Number(request.query.project);
+    const { templateType } = validateQueryParameters(request.query);
     const fiscal_breakdown = await model.getQuarterlyFiscalSummaries(projectId);
     const result = {
       project: await model.findById(projectId),
@@ -28,12 +32,12 @@ controller.Tab_16_rpt_P_QuarterlyReview = async (request, reply) => {
       report_date: await getCurrentDate(),
     };
 
-    const body = await getDocumentApiBody(result, "Tab_16_rpt_P_QuarterlyReview.docx");
-    const pdf = await cdogs.api.post("/template/render", body, pdfConfig);
-
-    // Inject the pdf data into the request object
-    request.data = pdf;
-
+    const body = await getDocumentApiBody(
+      result,
+      "Tab_16_rpt_P_QuarterlyReview.xlsx",
+      templateType
+    );
+    request.data = await cdogs.api.post("/template/render", body, pdfConfig);
     if (!result) {
       reply.code(404);
       return { message: `The ${what.single} with the specified id does not exist.` };

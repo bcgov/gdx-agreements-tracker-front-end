@@ -34,7 +34,7 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
           "Project Information, Budget Forecasting Information broken down between deliverable, detail amounts, quarter and portfolio recovery amount.",
         parameters: [{ label: "project", required: true }],
         exportPDF: true,
-        exportXLSX: false,
+        exportXLSX: true,
       },
       {
         value: "Tab_17_rpt_P_Status_MostRecent",
