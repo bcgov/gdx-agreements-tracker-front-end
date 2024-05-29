@@ -10,6 +10,9 @@ const cdogs = useCommonComponents("cdogs");
 const { getReport, getDocumentApiBody, pdfConfig, getCurrentDate } = utils;
 controller.getReport = getReport;
 
+// Utilities
+const { validateQueryParameters } = require("./helpers");
+
 /**
  * Get a Project rollup Report for a specific array of portfolio.
  *
@@ -23,6 +26,7 @@ controller.Tab_15_rpt_P_QuarterlyBillingRequest = async (request, reply) => {
     const projectId = request.query.project
       ? Number(request.query.project)
       : Number(request.query.project_id);
+    const { templateType } = validateQueryParameters(request.query);
     const fiscal = request.query.fiscal
       ? Number(request.query.fiscal)
       : Number(request.query.fiscal_year_id);
@@ -38,11 +42,13 @@ controller.Tab_15_rpt_P_QuarterlyBillingRequest = async (request, reply) => {
 
     // Calculate grand total from each deliverable amount.
     result.deliverables_total = result.deliverables.reduce((acc, d) => acc + d.amount, 0);
-    const body = await getDocumentApiBody(result, "Tab_15_rpt_P_QuarterlyBillingRequest.docx");
-    const pdf = await cdogs.api.post("/template/render", body, pdfConfig);
+    const body = await getDocumentApiBody(
+      result,
+      "Tab_15_rpt_P_QuarterlyBillingRequest.xlsx",
+      templateType
+    );
 
-    // Inject the pdf data into the request object
-    request.data = pdf;
+    request.data = await cdogs.api.post("/template/render", body, pdfConfig);
 
     if (!result) {
       reply.code(404);

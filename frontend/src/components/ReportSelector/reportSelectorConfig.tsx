@@ -25,7 +25,7 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
           { label: "quarter", required: true },
         ],
         exportPDF: true,
-        exportXLSX: false,
+        exportXLSX: true,
       },
       {
         value: "Tab_16_rpt_P_QuarterlyReview",
