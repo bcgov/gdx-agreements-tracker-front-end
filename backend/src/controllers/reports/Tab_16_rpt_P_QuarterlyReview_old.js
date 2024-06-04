@@ -4,6 +4,7 @@ const model = require("@models/reports/Tab_16_rpt_P_QuarterlyReview");
 const utils = require("./helpers");
 const what = { single: "report", plural: "reports" };
 const controller = useController(model, what);
+const log = require("../../facilities/logging")(module.filename);
 
 // Template and data reading
 const cdogs = useCommonComponents("cdogs");
@@ -31,6 +32,8 @@ controller.Tab_16_rpt_P_QuarterlyReview = async (request, reply) => {
       deliverables: await model.getQuarterlyDeliverables(projectId, fiscal_breakdown),
       report_date: await getCurrentDate(),
     };
+    log.info("RESULT OF TAB 15 queries:\n");
+    log.info(fiscal_breakdown);
 
     const body = await getDocumentApiBody(
       result,
