@@ -11,6 +11,10 @@ const {
   portfolioTable,
   clientCodingTable,
   fiscalYearTable,
+  contactTable,
+  projectTable,
+  projectMilestoneTable,
+  healthIndicatorTable,
 } = require("@models/useDbTables");
 
 /**
@@ -20,8 +24,18 @@ const {
  * @returns {Promise}                            - A promise that resolves to the query result
  */
 const queries = {
-  project: (project) => findById(project),
-  quarterlyFiscal: (project) =>
+  project: (project_id) =>
+    knex("project as p")
+      .select({
+        project_number: "project_number",
+        project_name: "project_name",
+        project_manager: knex.raw("c.last_name || ', ' || c.first_name"),
+        start_date: knex.raw("to_char(p.planned_start_date, 'dd-Mon-yy')"),
+        end_date: knex.raw("to_char(p.planned_end_date, 'dd-Mon-yy')"),
+      })
+      .leftJoin(`${contactTable} as c`, "p.project_manager", "c.id")
+      .where("p.id", project_id),
+  quarterlyFiscal: (project_id) =>
     knex("fiscal_year as fy")
       .select({
         fiscal_year: "fiscal_year",
@@ -32,12 +46,12 @@ const queries = {
         q4_total: knex.sum("q4_amount"),
         client: "pb.client_coding_id",
       })
-      .leftJoin(`${projectDeliverableTable} as pd`, { "fy.id": "pd.fiscal" })
-      .leftJoin(`${projectBudgetTable} as pb`, { "pd.id": "pb.project_deliverable_id" })
-      .where("pd.project_id", project)
+      .leftJoin(`data.project_deliverable  as pd`, { "fy.id": "pd.fiscal" })
+      .leftJoin(`data.project_budget  as pb`, { "pd.id": "pb.project_deliverable_id" })
+      .where("pd.project_id", project_id)
       .groupBy("fy.fiscal_year", "pb.client_coding_id")
       .orderBy("fy.fiscal_year", "pb.client_coding_id"),
-  quarterlyDeliverables: (project) => {},
+  quarterlyDeliverables: (project_id) => {},
 };
 
 // Get the quarterly fiscal summary for a specific project by id

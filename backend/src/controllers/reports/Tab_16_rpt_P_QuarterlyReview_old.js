@@ -32,7 +32,7 @@ controller.Tab_16_rpt_P_QuarterlyReview = async (request, reply) => {
       deliverables: await model.getQuarterlyDeliverables(projectId, fiscal_breakdown),
       report_date: await getCurrentDate(),
     };
-    log.info("RESULT OF TAB 15 queries:\n");
+    log.info("RESULT OF TAB 16 queries:\n");
     log.info(fiscal_breakdown);
 
     const body = await getDocumentApiBody(
