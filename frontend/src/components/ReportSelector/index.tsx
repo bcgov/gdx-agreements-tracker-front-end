@@ -17,7 +17,7 @@ import { ReportParameters } from "./ReportParameters";
 import { ReportTypes } from "./ReportTypes";
 import { handleReportExport } from "../../utils/handleReportExport";
 
-const RadioSelect = () => {
+const ReportSelector = () => {
   const [typeDescription, setTypeDescription] = useState<string | undefined>("");
   const initialValues = {
     date: null,
@@ -185,4 +185,4 @@ const RadioSelect = () => {
   );
 };
 
-export default RadioSelect;
+export default ReportSelector;
