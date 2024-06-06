@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material";
 import bcgovTheme from "../../bcgovTheme";
+// delete this comment
 
 export const Accordion = ({
   children,
