@@ -200,7 +200,7 @@ npm run start # runs the backend API
 ```bash
 # frontend .env
 WDS_SOCKET_PORT=3000
-REACT_APP_API_URL="https://localhost:8080/"
+REACT_APP_API_URL="http://localhost:8080/"
 REACT_APP_KEYCLOAK_CLIENT_ID=# see note above for value
 REACT_APP_KEYCLOAK_REALM=standard
 REACT_APP_KEYCLOAK_URL=# see note above for value

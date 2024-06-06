@@ -28,7 +28,7 @@ const verifyToken = (token, jwksUri = null) => {
   return new Promise((resolve, reject) => {
     const decodedToken = jwt.decode(token, { complete: true });
     const client = jwksClient({
-      strictSsl: true,
+      strictSsl: false,
       jwksUri: jwksUri,
     });
 
