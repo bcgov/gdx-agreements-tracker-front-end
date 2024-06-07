@@ -1,5 +1,6 @@
 // libs
 const { knex } = require("@database/databaseConnection")();
+const { getCurrentDate } = require("@controllers/reports/helpers");
 
 /**
  * Retrieves the data for various financial metrics based on the fiscal year and quarter
@@ -84,6 +85,8 @@ module.exports = {
         queries?.fiscal(fiscal),
         queries?.report(fiscal, quarter),
         queries?.totals(fiscal, quarter),
+        getCurrentDate(),
+        "rpt_PF_JVsforFiscal-Quarter"
       ]);
 
       // Extract the results from the fetched Query Results into individual variables
@@ -91,6 +94,8 @@ module.exports = {
         { fiscal_year }, // the result of the 'fiscal' query
         report, // the result of the 'report' query
         totals, // the result of the 'totals' query
+        current_date,
+        report_name
       ] = fetchedQueryResults;
 
       // create a result object with the fetched data for each section of the report
@@ -99,6 +104,8 @@ module.exports = {
         fiscal: fiscal_year,
         report,
         totals,
+        current_date,
+        report_name
       };
 
       // finally, return the shaped result
