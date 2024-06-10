@@ -97,7 +97,7 @@ const queries = {
  * @param   {Array}  fiscalYearData - Data grouped by fiscal year
  * @param   {Array}  subtotalData   - Subtotal data
  * @param   {Array}  totalData      - Total data
- * @returns {object}                - Merged data with Headers, fiscal summaries, and totals.
+ * @returns {object}                - Merged fiscal summary data with totals.
  */
 const mergeFiscalWithTotals = (fiscalYearData, subtotalData, totalData) => {
   // Helper function to group data by a key
