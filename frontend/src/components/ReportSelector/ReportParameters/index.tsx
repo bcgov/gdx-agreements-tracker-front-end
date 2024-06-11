@@ -26,6 +26,36 @@ export const ReportParameters = ({ values, setFieldValue, categoriesAndTypes, to
           />
         );
 
+      case "multiFiscal":
+        return (
+          <>
+            <FormInput
+              touched={touched}
+              key={`${label}`}
+              fieldName="fiscalFrom"
+              fieldType={"select"}
+              fieldLabel="Fiscal From"
+              width={"half"}
+              pickerName="fiscal_year_option"
+              fieldValue={values.fiscalFrom}
+              setFieldValue={setFieldValue}
+              required={required}
+            />
+            <FormInput
+              touched={touched}
+              key={`${label}`}
+              fieldName="fiscalTo"
+              fieldType={"select"}
+              fieldLabel="Fiscal To"
+              width={"half"}
+              pickerName="fiscal_year_option"
+              fieldValue={values.fiscalTo}
+              setFieldValue={setFieldValue}
+              required={required}
+            />
+          </>
+        );
+
       case "portfolio":
         return (
           <FormInput
