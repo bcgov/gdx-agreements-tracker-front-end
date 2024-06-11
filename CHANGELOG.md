@@ -1,3 +1,11 @@
+**June 10, 2024 [DESCW-2397](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-2397)**
+
+- Backend
+  - re-factor model to use generic controller and route
+  - re-write query to return appropriate data
+- Frontend
+  - remove PDF export option
+  - update Template to display new data
 **February 13, 2024 [DESCW-2009](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-2009)**
 
 - Backend
@@ -60,7 +68,7 @@
   - Adds documentation for Select component
   - Recovered missing documentation for AutocompleteTable component
 
-**January 18, 2024 [DESCW-1835, 1837](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-1835) (https://apps.itsm.gov.bc.ca/jira/browse/DESCW-1837)**
+**January 18, 2024 [DESCW-1835, 1837](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-1835) (<https://apps.itsm.gov.bc.ca/jira/browse/DESCW-1837>)**
 
 - Frontend
   - fix bug causing a null value warning on TextArea inputs in product detail forms.
@@ -241,7 +249,7 @@
 
 - Frontend
   - removes Autocomplete console warning for non-atomic input values (e.g. objects)
-  - see: https://mui.com/material-ui/react-autocomplete/#free-solo
+  - see: <https://mui.com/material-ui/react-autocomplete/#free-solo>
 
 **December 18, 2023 [DESCW-1752](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-1752)**
 
@@ -1041,7 +1049,7 @@
   - refactor groupByProperty util
     - add comments to make it easier to read
     - add default parameters to the function signature
-    - fix strange timeout caused by failing _.isEmpty() or _.groupBy
+    - fix strange timeout caused by failing _.isEmpty() or_.groupBy
   - delete tab 48 route and controller (using generic)
   - refactored Tab_48 model
     - replace all queries ( using Gary's Queries)
@@ -1757,7 +1765,7 @@ fixed issue with duplicate clicks for dblocking mechanism
   - `npx knex seed:run –specific “02_role_capabilities.js`
 
 - Make sure to run migration latest:
-  - `npx knex migrate:latest `
+  - `npx knex migrate:latest`
 
 | Backend |
 | ------- |
