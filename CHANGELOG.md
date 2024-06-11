@@ -1,11 +1,25 @@
+**June 11, 2024 [DESCW-2400](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-2400)**
+
+- Backend
+  - Refactor Model, replace route and controller with generics
+  - update model output to match necessary fields in Access report example PDF
+
+- Frontend
+  - update selector to only use Excel exports of the tab 17 report
+  - disable PDF export
+  - build Excel template for the tab 17 data.
+
 **June 10, 2024 [DESCW-2397](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-2397)**
 
 - Backend
-  - re-factor model to use generic controller and route
-  - re-write query to return appropriate data
+  - Refactor Model, replace route and controller with generics
+  - update model output to match necessary fields in Access report example PDF
+
 - Frontend
-  - remove PDF export option
-  - update Template to display new data
+  - update selector to only use Excel exports of the tab 17 report
+  - disable PDF export
+  - build Excel template for the tab 17 data.
+
 **February 13, 2024 [DESCW-2009](https://apps.itsm.gov.bc.ca/jira/browse/DESCW-2009)**
 
 - Backend
