@@ -28,8 +28,22 @@ const queries = {
       .leftJoin("data.project_deliverable as pd", "fy.id", "pd.fiscal")
       .leftJoin("data.project_budget as pb", "pd.id", "pb.project_deliverable_id")
       .leftJoin("data.client_coding as cc", "cc.id", "pb.client_coding_id")
-      .leftJoin("data.portfolio as port", { "port.id": "pb.recovery_area" }) // Adding this join here for quarterlyFiscal
+      .leftJoin("data.portfolio as port", "port.id", "pb.recovery_area")
       .where("pd.project_id", project_id),
+
+  genericSumQuery: (project_id, selectFields, groupByFields = []) =>
+    queries
+      .commonJoins(project_id)
+      .select(selectFields)
+      .sum({
+        detail_amount: "detail_amount",
+        q1_amount: "q1_amount",
+        q2_amount: "q2_amount",
+        q3_amount: "q3_amount",
+        q4_amount: "q4_amount",
+      })
+      .groupBy(groupByFields)
+      .orderBy("fy.fiscal_year"),
 
   quarterlyFiscal: (project_id) =>
     queries
@@ -54,38 +68,23 @@ const queries = {
       .orderBy("fy.fiscal_year"),
 
   subtotals: (project_id) =>
-    queries
-      .commonJoins(project_id)
-      .select({
+    queries.genericSumQuery(
+      project_id,
+      {
         fiscal_year: "fy.fiscal_year",
         client: "pb.client_coding_id",
-      })
-      .sum({
-        detail_amount: "detail_amount",
-        q1_amount: "q1_amount",
-        q2_amount: "q2_amount",
-        q3_amount: "q3_amount",
-        q4_amount: "q4_amount",
-      })
-      .groupBy("fy.fiscal_year")
-      .groupBy("pb.client_coding_id")
-      .orderBy("fy.fiscal_year"),
+      },
+      ["fy.fiscal_year", "pb.client_coding_id"]
+    ),
 
   totals: (project_id) =>
-    queries
-      .commonJoins(project_id)
-      .select({
+    queries.genericSumQuery(
+      project_id,
+      {
         fiscal_year: "fy.fiscal_year",
-      })
-      .sum({
-        detail_amount: "detail_amount",
-        q1_amount: "q1_amount",
-        q2_amount: "q2_amount",
-        q3_amount: "q3_amount",
-        q4_amount: "q4_amount",
-      })
-      .groupBy("fy.fiscal_year")
-      .orderBy("fy.fiscal_year"),
+      },
+      ["fy.fiscal_year"]
+    ),
 };
 
 /**
