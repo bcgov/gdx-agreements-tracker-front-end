@@ -30,6 +30,9 @@ controller.Tab_17_rpt_P_Status_MostRecent = async (request, reply) => {
       report_date: await getCurrentDate(),
     };
 
+    // output this model's data in the console for debugging purposes.
+    console.info(JSON.stringify(result, null, 2));
+
     const body = await getDocumentApiBody(result, "Tab_17_rpt_P_Status_MostRecent.docx");
     const pdf = await cdogs.api.post("/template/render", body, pdfConfig);
 
