@@ -23,8 +23,17 @@ const queries = {
       .where("p.id", project_id)
       .first(),
 
-  quarterlyFiscal: (project_id) =>
+  commonJoins: (project_id) =>
     knex("fiscal_year as fy")
+      .leftJoin("data.project_deliverable as pd", "fy.id", "pd.fiscal")
+      .leftJoin("data.project_budget as pb", "pd.id", "pb.project_deliverable_id")
+      .leftJoin("data.client_coding as cc", "cc.id", "pb.client_coding_id")
+      .leftJoin("data.portfolio as port", { "port.id": "pb.recovery_area" }) // Adding this join here for quarterlyFiscal
+      .where("pd.project_id", project_id),
+
+  quarterlyFiscal: (project_id) =>
+    queries
+      .commonJoins(project_id)
       .select({
         id: "pd.id",
         deliverable_name: "deliverable_name",
@@ -42,16 +51,11 @@ const queries = {
         fiscal_year: "fiscal_year",
         client: "pb.client_coding_id",
       })
-      .leftJoin(`data.project_deliverable  as pd`, { "fy.id": "pd.fiscal" })
-      .leftJoin(`data.project_budget  as pb`, { "pd.id": "pb.project_deliverable_id" })
-      .leftJoin(`data.client_coding as cc`, { "cc.id": "pb.client_coding_id" })
-      .leftJoin(`data.portfolio as port`, { "port.id": "pb.recovery_area" })
-      .where("pd.project_id", project_id)
-      .orderBy("fy.fiscal_year")
-      .orderBy("pb.client_coding_id"),
+      .orderBy("fy.fiscal_year"),
 
   subtotals: (project_id) =>
-    knex("fiscal_year as fy")
+    queries
+      .commonJoins(project_id)
       .select({
         fiscal_year: "fy.fiscal_year",
         client: "pb.client_coding_id",
@@ -63,16 +67,13 @@ const queries = {
         q3_amount: "q3_amount",
         q4_amount: "q4_amount",
       })
-      .leftJoin("data.project_deliverable as pd", "fy.id", "pd.fiscal")
-      .leftJoin("data.project_budget as pb", "pd.id", "pb.project_deliverable_id")
-      .leftJoin("data.client_coding as cc", "cc.id", "pb.client_coding_id")
-      .where("pd.project_id", project_id)
       .groupBy("fy.fiscal_year")
       .groupBy("pb.client_coding_id")
       .orderBy("fy.fiscal_year"),
 
   totals: (project_id) =>
-    knex("fiscal_year as fy")
+    queries
+      .commonJoins(project_id)
       .select({
         fiscal_year: "fy.fiscal_year",
       })
@@ -83,10 +84,6 @@ const queries = {
         q3_amount: "q3_amount",
         q4_amount: "q4_amount",
       })
-      .leftJoin(`data.project_deliverable  as pd`, { "fy.id": "pd.fiscal" })
-      .leftJoin(`data.project_budget  as pb`, { "pd.id": "pb.project_deliverable_id" })
-      .leftJoin(`data.client_coding as cc`, { "cc.id": "pb.client_coding_id" })
-      .where("pd.project_id", project_id)
       .groupBy("fy.fiscal_year")
       .orderBy("fy.fiscal_year"),
 };
