@@ -8,99 +8,42 @@ const { knex } = dbConnection();
  * @returns {Knex.QueryBuilder}        Knex query builder for fetching report data.
  */
 const queries = {
-  billing: () => {
+  fiscal_years: (fiscalFrom, fiscalTo) => {
+    return {
+      fiscalFrom: fiscalFrom,
+      fiscalTo: fiscalTo,
+    };
+  },
+  recoveries: (fiscalFrom, fiscalTo) => {
+    return knex("tab_21_recoverables_by_fiscal")
+      .select("*")
+      .whereBetween("budget_fiscal", [fiscalFrom, fiscalTo]);
+  },
+  fiscal_grand_totals: (fiscalFrom, fiscalTo) => {
     return knex
-      .with(
-        "historical_projects",
-        knex
-          .select(
-            "hp.project_number",
-            "hp.project_name",
-            "hp.total_project_budget",
-            "fy.fiscal_year as budget_fiscal",
-            "hpb.q1",
-            "hpb.q2",
-            "hpb.q3",
-            "hpb.q4",
-            knex.raw(
-              `COALESCE(hpb.q1, '0.00') + COALESCE(hpb.q2, '0.00') + COALESCE(hpb.q3, '0.00') + COALESCE(hpb.q4, '0.00') AS total_recovered`
-            )
-          )
-          .from("data.historical_projects as hp")
-          .innerJoin(
-            "data.historical_project_billing as hpb",
-            "hp.project_number",
-            "hpb.project_number"
-          )
-          .innerJoin("data.fiscal_year as fy", "hpb.fiscal_year", "fy.id")
-          .groupBy(
-            "hp.project_number",
-            "hp.project_name",
-            "hp.total_project_budget",
-            "fy.fiscal_year",
-            "hpb.q1",
-            "hpb.q2",
-            "hpb.q3",
-            "hpb.q4"
-          )
+      .select(
+        knex.raw("SUM(total_recovered) as recovered_total"),
+        knex.raw("SUM(q1) as q1"),
+        knex.raw("SUM(q2) as q2"),
+        knex.raw("SUM(q3) as q3"),
+        knex.raw("SUM(q4) as q4"),
+        "budget_fiscal"
       )
-      .with(
-        "current_projects",
-        knex
-          .select(
-            "p.project_number",
-            "p.project_name",
-            "p.total_project_budget",
-            "fy.fiscal_year",
-            knex.raw(`SUM(CASE WHEN jv.quarter = '1' THEN jv.amount ELSE NULL END) AS q1`),
-            knex.raw(`SUM(CASE WHEN jv.quarter = '2' THEN jv.amount ELSE NULL END) AS q2`),
-            knex.raw(`SUM(CASE WHEN jv.quarter = '3' THEN jv.amount ELSE NULL END) AS q3`),
-            knex.raw(`SUM(CASE WHEN jv.quarter = '4' THEN jv.amount ELSE NULL END) AS q4`),
-            knex.raw(`SUM(jv.amount) AS total_recovered`)
-          )
-          .from("data.project as p")
-          .innerJoin("data.jv as jv", "p.id", "jv.project_id")
-          .innerJoin("data.fiscal_year as fy", "jv.fiscal_year_id", "fy.id")
-          .groupBy("p.project_number", "p.project_name", "p.total_project_budget", "fy.fiscal_year")
-      )
-      .unionAll([
-        knex
-          .select(
-            "project_number",
-            "project_name",
-            "total_project_budget",
-            "budget_fiscal",
-            "q1",
-            "q2",
-            "q3",
-            "q4",
-            knex.raw(
-              `COALESCE(q1, '0.00') + COALESCE(q2, '0.00') + COALESCE(q3, '0.00') + COALESCE(q4, '0.00') AS total_recovered`
-            )
-          )
-          .from("historical_projects"),
-        knex
-          .select(
-            "project_number",
-            "project_name",
-            "total_project_budget",
-            "fiscal_year",
-            "q1",
-            "q2",
-            "q3",
-            "q4",
-            "total_recovered"
-          )
-          .from("current_projects"),
-      ]);
+      .from("data.tab_21_recoverables_by_fiscal")
+      .whereBetween("budget_fiscal", [fiscalFrom, fiscalTo])
+      .groupBy("fiscal_id", "budget_fiscal");
   },
 };
 
 module.exports = {
-  required: ["fiscal"],
-  getAll: async () => {
-    const [reportBilling] = await Promise.all([queries.billing()]);
+  required: ["fiscalFrom", "fiscalTo"],
+  getAll: async ({ fiscalFrom, fiscalTo }) => {
+    const [reportFiscalYears, reportRecoveries, reportFiscalGrandTotals] = await Promise.all([
+      queries.fiscal_years(fiscalFrom, fiscalTo),
+      queries.recoveries(fiscalFrom, fiscalTo),
+      queries.fiscal_grand_totals(fiscalFrom, fiscalTo),
+    ]);
 
-    return { reportBilling };
+    return { reportFiscalYears, reportRecoveries, reportFiscalGrandTotals };
   },
 };
