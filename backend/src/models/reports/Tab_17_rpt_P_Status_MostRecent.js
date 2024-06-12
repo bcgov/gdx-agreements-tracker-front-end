@@ -1,5 +1,6 @@
-const dbConnection = require("@database/databaseConnection");
+// Libs
 const { knex } = dbConnection();
+const dbConnection = require("@database/databaseConnection");
 
 const queries = {
   project: (project_id) =>
@@ -17,14 +18,6 @@ const queries = {
         ministry_label: knex.raw("p.ministry_id::json ->> 'label'"), // Extracted ministry Label.
         description: "p.description",
         goals: "p.project_goals",
-        status_date: knex.raw(`
-            (SELECT TO_CHAR(ps.status_date, 'dd-Mon-yy')
-            FROM data.project_status as ps
-            WHERE ps.project_id = ${project_id}
-            ORDER BY ps.status_date DESC
-            LIMIT 1)
-          `),
-        divider: knex.raw(`'--------------------------------------------------------- '`),
       })
       .leftJoin(`data.contact as c`, "p.project_manager", "c.id")
       .leftJoin(
@@ -53,22 +46,81 @@ const queries = {
       )
       .where("p.id", project_id)
       .first(),
+  alignment: (project_id) =>
+    knex("data.project_strategic_alignment as psa")
+      .select({ description: "sa.description" })
+      .leftJoin("data.strategic_alignment as sa", "psa.strategic_alignment_id", "sa.id")
+      .where({
+        "psa.project_id": project_id,
+        "psa.checked": true,
+      }),
+
+  status: (project_id) =>
+    knex(`data.project as project`)
+      .select(
+        { project_phase: "phase.phase_name" },
+        {
+          project_health: "health.health_name",
+          project_red: "health.colour_red",
+          project_green: "health.colour_green",
+          project_blue: "health.colour_blue",
+        },
+        {
+          schedule_health: "schedule.health_name",
+          schedule_red: "schedule.colour_red",
+          schedule_green: "schedule.colour_green",
+          schedule_blue: "schedule.colour_blue",
+        },
+        {
+          budget_health: "budget.health_name",
+          budget_red: "budget.colour_red",
+          budget_green: "budget.colour_green",
+          budget_blue: "budget.colour_blue",
+        },
+        {
+          team_health: "team.health_name",
+          team_red: "team.colour_red",
+          team_green: "team.colour_green",
+          team_blue: "team.colour_blue",
+        },
+        { reported_by: knex.raw("reported_by.last_name || ', ' || reported_by.first_name") },
+        "project.status_date",
+        "project.general_progress_comments",
+        "project.issues_and_decisions",
+        "project.forecast_and_next_steps",
+        "project.identified_risk"
+      )
+      .leftJoin(`data.project_phase as phase`, "project.project_phase_id", "phase.id")
+      .leftJoin(`data.health_indicator as health`, "project.health_id", "health.id")
+      .leftJoin(`data.health_indicator as schedule`, "project.schedule_health_id", "schedule.id")
+      .leftJoin(`data.health_indicator as budget`, "project.budget_health_id", "budget.id")
+      .leftJoin(`data.health_indicator as team`, "project.team_health_id", "team.id")
+      .leftJoin(`data.contact as reported_by`, "project.reported_by_contact_id", "reported_by.id")
+      .where("project.project_id", project_id)
+      .orderBy("project.status_date", "desc")
+      .first(),
 };
 
 // standard Models
-// const { findById } = require("@models/projects"); // project
 const {
   projectStatusReport, // deliverables
   getMilestones, // milestones
-  getStrategicAlignment, // alignment
 } = require("@models/reports/useProject");
 const { findMostRecentStatusById } = require("@models/projects"); // status
 
+// TODO:
+/*
+replace queries for report Data
+1) project status
+2) deliverables
+3) milestones
+*/
+
 // Exports the data in sections,  in the order we will use it with the template.
 module.exports = {
-  findById: queries.project, // project section
-  projectStatusReport, // deliverables section
-  getMilestones, // milestones section
-  getStrategicAlignment, // alignment section
-  findMostRecentStatusById, // status section
+  project: queries.project, // project section
+  alignment: queries.alignment, // alignment section
+  status: findMostRecentStatusById, // status section
+  deliverables: projectStatusReport, // deliverables section
+  milestones: getMilestones, // milestones section
 };
