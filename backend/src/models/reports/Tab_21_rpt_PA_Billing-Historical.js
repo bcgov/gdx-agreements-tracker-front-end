@@ -8,7 +8,7 @@ const { knex } = dbConnection();
  * @returns {Knex.QueryBuilder}        Knex query builder for fetching report data.
  */
 const queries = {
-  fiscal_years: (fiscalFrom, fiscalTo) => {
+  fiscal_years_to_from: (fiscalFrom, fiscalTo) => {
     return {
       fiscalFrom: fiscalFrom,
       fiscalTo: fiscalTo,
@@ -35,15 +35,35 @@ const queries = {
   },
 };
 
+const combineFiscalTotals = (totalsByFiscal, reportSection) => {
+  const withTotals = [];
+
+  totalsByFiscal.forEach((fiscalTotal) => {
+    const fiscalYear = fiscalTotal.budget_fiscal;
+    const sectionItems = reportSection.filter((section) => section.budget_fiscal === fiscalYear);
+
+    withTotals.push({
+      sectionInfo: sectionItems,
+      sectionTotals: fiscalTotal,
+      sectionFiscal: fiscalYear,
+    });
+  });
+
+  return withTotals;
+};
+
 module.exports = {
   required: ["fiscalFrom", "fiscalTo"],
   getAll: async ({ fiscalFrom, fiscalTo }) => {
-    const [reportFiscalYears, reportRecoveries, reportFiscalGrandTotals] = await Promise.all([
-      queries.fiscal_years(fiscalFrom, fiscalTo),
+    const [reportFiscalYearsToFrom, reportRecoveries, reportFiscalGrandTotals] = await Promise.all([
+      queries.fiscal_years_to_from(fiscalFrom, fiscalTo),
       queries.recoveries(fiscalFrom, fiscalTo),
       queries.fiscal_grand_totals(fiscalFrom, fiscalTo),
     ]);
 
-    return { reportFiscalYears, reportRecoveries, reportFiscalGrandTotals };
+    return {
+      reportFiscalYearsToFrom,
+      reportRecoveriesWithTotals: combineFiscalTotals(reportFiscalGrandTotals, reportRecoveries),
+    };
   },
 };
