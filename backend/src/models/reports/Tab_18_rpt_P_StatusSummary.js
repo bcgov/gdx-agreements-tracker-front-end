@@ -129,7 +129,8 @@ const queries = {
       )
       .leftJoin("contact as c", "p.completed_by_contact_id", "c.id")
       .leftJoin("project_lesson as pl", "pl.project_id", projectId)
-      .where("p.id", projectId);
+      .where("p.id", projectId)
+      .first();
   },
   reportStrategicAlignment: (projectId) => {
     return knex
