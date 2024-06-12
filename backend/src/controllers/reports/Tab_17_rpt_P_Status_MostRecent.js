@@ -22,12 +22,11 @@ controller.Tab_17_rpt_P_Status_MostRecent = async (request, reply) => {
     // Get the data from the database.
     const projectId = Number(request.query.project);
     const result = {
-      project: await model.findById(projectId),
-      deliverables: await model.projectStatusReport(projectId),
-      milestones: await model.getMilestones(projectId),
-      alignment: await model.getStrategicAlignment(projectId),
-      status: await model.findMostRecentStatusById(projectId),
-      report_date: await getCurrentDate(),
+      project: await model.project(projectId),
+      alignment: await model.alignment(projectId),
+      status: await model.status(projectId),
+      //deliverables: await model.deliverables(projectId),
+      //milestones: await model.milestones(projectId),
     };
 
     // output this model's data in the console for debugging purposes.
