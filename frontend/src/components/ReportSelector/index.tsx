@@ -16,7 +16,6 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { ReportParameters } from "./ReportParameters";
 import { ReportTypes } from "./ReportTypes";
 import { handleReportExport } from "../../utils/handleReportExport";
-import { object, string, number } from "yup";
 
 const ReportSelector = () => {
   const [typeDescription, setTypeDescription] = useState<string | undefined>("");
@@ -37,28 +36,29 @@ const ReportSelector = () => {
       handleReportExport(values);
     },
     initialValues: initialValues,
-    validationSchema: object().shape({
-      fiscalFrom: object({ value: number(), label: string() }),
-      fiscalTo: object({ value: number().required(), label: string().required() })
-        .required()
-        .test(
-          "fiscalTo-greater-than-fiscalFrom",
-          "Fiscal To must be greater than Fiscal From",
-          (value, { parent }) => {
-            const fiscalFrom = parent.fiscalFrom.label;
-            const fiscalTo = value.label;
+    // TODO Fix this in future PR
+    // validationSchema: object().shape({
+    //   fiscalFrom: object({ value: number(), label: string() }),
+    //   fiscalTo: object({ value: number().required(), label: string().required() })
+    //     .required()
+    //     .test(
+    //       "fiscalTo-greater-than-fiscalFrom",
+    //       "Fiscal To must be greater than Fiscal From",
+    //       (value, { parent }) => {
+    //         const fiscalFrom = parent.fiscalFrom.label;
+    //         const fiscalTo = value.label;
 
-            if (!fiscalTo) return;
+    //         if (!fiscalTo) return;
 
-            // Extract the year from the fiscal period (e.g. "14-15" -> 14)
-            const fiscalFromYear = parseInt(fiscalFrom.split("-")[0], 10);
-            const fiscalToYear = parseInt(fiscalTo.split("-")[0], 10);
-            // Check if fiscalTo is greater than or equal to fiscalFrom
+    //         // Extract the year from the fiscal period (e.g. "14-15" -> 14)
+    //         const fiscalFromYear = parseInt(fiscalFrom.split("-")[0], 10);
+    //         const fiscalToYear = parseInt(fiscalTo.split("-")[0], 10);
+    //         // Check if fiscalTo is greater than or equal to fiscalFrom
 
-            return fiscalToYear >= fiscalFromYear;
-          }
-        ),
-    }),
+    //         return fiscalToYear >= fiscalFromYear;
+    //       }
+    //     ),
+    // }),
   });
 
   const resetAllParameters = () => {
