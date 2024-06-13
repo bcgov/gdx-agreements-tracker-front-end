@@ -59,11 +59,11 @@ const queries = {
   // Strategic alignment under project goals.
   alignment: (project_id) =>
     knex(`data.project_strategic_alignment as psa`)
-      .select({ description: "sa.description" })
-      .leftJoin(`data.strategic_alignment as sa`, "psa.strategic_alignment_id", "sa.id")
+      .select("strategic_alignment.description")
+      .leftJoin("data.strategic_alignment", "psa.strategic_alignment_id", "strategic_alignment.id")
       .where({
-        "psa.project_id": project_id,
         "psa.checked": true,
+        "psa.project_id": project_id,
       })
       .first(),
 
@@ -75,21 +75,37 @@ const queries = {
         knex.raw(`reported_by.first_name || ' ' || reported_by.last_name AS reported_by`),
         "phase.phase_name AS project_phase",
         "health.health_name AS project_health",
-        knex.raw(
-          "CONCAT(health.colour_red, ',', health.colour_green, ',', health.colour_blue) AS colour_project"
-        ),
         "team.health_name AS team_health",
-        knex.raw(
-          "CONCAT(team.colour_red, ',', team.colour_green, ',', team.colour_blue) AS colour_team"
-        ),
         "budget.health_name AS budget_health",
-        knex.raw(
-          "CONCAT(budget.colour_red, ',', budget.colour_green, ',', budget.colour_blue) AS colour_budget"
-        ),
         "schedule.health_name AS schedule_health",
-        knex.raw(
-          "CONCAT(schedule.colour_red, ',', schedule.colour_green, ',', schedule.colour_blue) AS colour_schedule"
-        ),
+        knex.raw(`
+            CASE
+              WHEN health.health_name IS NOT NULL THEN
+                CONCAT(health.colour_red, ',', health.colour_green, ',', health.colour_blue)
+              ELSE NULL
+            END AS colour_project
+          `),
+        knex.raw(`
+                CASE
+                  WHEN team.health_name IS NOT NULL THEN
+                    CONCAT(team.colour_red, ',', team.colour_green, ',', team.colour_blue)
+                  ELSE NULL
+                END AS colour_team
+              `),
+        knex.raw(`
+                CASE
+                  WHEN budget.health_name IS NOT NULL THEN
+                    CONCAT(budget.colour_red, ',', budget.colour_green, ',', budget.colour_blue)
+                  ELSE NULL
+                END AS colour_budget
+              `),
+        knex.raw(`
+                CASE
+                  WHEN schedule.health_name IS NOT NULL THEN
+                    CONCAT(schedule.colour_red, ',', schedule.colour_green, ',', schedule.colour_blue)
+                  ELSE NULL
+                END AS colour_schedule
+              `),
         "ps.general_progress_comments AS general_progress_comments",
         "ps.issues_and_decisions AS issues_and_decisions",
         "ps.forecast_and_next_steps AS forecast_and_next_steps",
@@ -118,9 +134,13 @@ const queries = {
         { completion_date: getFormattedDate("pd.completion_date") },
         "pd.deliverable_amount",
         { percent_complete: knex.raw("?? * 100", ["pd.percent_complete"]) },
-        knex.raw(
-          "CONCAT(hi.colour_red, ',', hi.colour_green, ',', hi.colour_blue) AS colour_health"
-        ),
+        knex.raw(`
+            CASE
+              WHEN pd.id IS NOT NULL THEN
+                CONCAT(hi.colour_red, ',', hi.colour_green, ',', hi.colour_blue)
+              ELSE NULL
+            END AS colour_health
+          `),
         "pd.deliverable_status"
       )
       .from(`data.project as p`)
@@ -132,18 +152,24 @@ const queries = {
       .andWhere("p.id", project_id),
 
   milestones: (project_id) =>
-    knex(`data.project_milestone as pm`)
-      .select(
-        "project_id",
-        "description",
-        "fiscal_id",
-        { target_completion_date: getFormattedDate("target_completion_date") },
-        { actual_completion_date: getFormattedDate("actual_completion_date") },
-
-        "status",
-        "health_id"
-      )
-      .where({ project_id: project_id }),
+    knex
+      .select([
+        knex.raw(`COALESCE(pm.description, 'No Milestones') as description`),
+        { target_completion_date: getFormattedDate("pm.target_completion_date") },
+        { actual_completion_date: getFormattedDate("pm.actual_completion_date") },
+        "pm.status",
+        knex.raw(`
+            CASE
+              WHEN pm.description IS NOT NULL THEN
+                CONCAT(hi.colour_red, ',', hi.colour_green, ',', hi.colour_blue)
+              ELSE NULL
+            END AS colour_health
+          `),
+      ])
+      .from("data.project as p")
+      .leftJoin("data.project_milestone as pm", "p.id", "pm.project_id")
+      .leftJoin(`data.health_indicator as hi`, "hi.id", "pm.health_id")
+      .where("p.id", project_id),
 };
 
 /**
@@ -151,7 +177,7 @@ const queries = {
  *
  * @param   {object} options         - Options object containing fiscal year.
  * @param   {string} options.project - The project id to filter on project id.  This param may be called project_id.
- * @returns {object}                 - An object containing fiscal year, report, and report total.
+ * @returns {object}                 - An object containing report data and totals.
  */
 const getAll = async ({ project: project_id }) => {
   try {
