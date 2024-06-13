@@ -34,6 +34,7 @@ const ReportSelector = () => {
 
   const formik = useFormik({
     onSubmit: (values) => {
+      console.log(values)
       handleReportExport(values);
     },
     initialValues: initialValues,
