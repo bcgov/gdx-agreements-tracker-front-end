@@ -6,7 +6,7 @@ const convertValueToString = (item: ConvertToStringItem, key: string) => {
     return item.map((item) => item.value).join(",");
   }
   if ("object" === typeof item) {
-    if (key === "fiscalFrom" || key === "fiscalTo") {
+    if ("fiscalFrom" === key || "fiscalTo" === key) {
       return item.label;
     }
 

@@ -8,13 +8,6 @@ const { knex } = dbConnection();
  * @returns {Knex.QueryBuilder}        Knex query builder for fetching report data.
  */
 const queries = {
-  fiscalToFrom: (fiscalFrom, fiscalTo) => {
-    return knex("tab_21_recoverables_by_fiscal")
-      .select("budget_fiscal")
-      .where("budget_fiscal", ">=", fiscalFrom)
-      .andWhere("budget_fiscal", "<=", fiscalTo)
-      .groupBy("budget_fiscal");
-  },
   recoveries: (fiscalFrom, fiscalTo) => {
     return knex("tab_21_recoverables_by_fiscal")
       .select("*")
@@ -69,12 +62,11 @@ const combineFiscalTotals = (totalsByFiscal, reportSection) => {
 module.exports = {
   required: ["fiscalFrom", "fiscalTo"],
   getAll: async ({ fiscalFrom, fiscalTo }) => {
-    const [reportRecoveries, reportFiscalGrandTotals, reportMultiFiscalGrandTotals, fiscalToFrom] =
+    const [reportRecoveries, reportFiscalGrandTotals, reportMultiFiscalGrandTotals] =
       await Promise.all([
         queries.recoveries(fiscalFrom, fiscalTo),
         queries.fiscalGrandTotals(fiscalFrom, fiscalTo),
         queries.multiFiscalGrandTotals(fiscalFrom, fiscalTo),
-        queries.fiscalToFrom(fiscalFrom, fiscalTo),
       ]);
 
     return {

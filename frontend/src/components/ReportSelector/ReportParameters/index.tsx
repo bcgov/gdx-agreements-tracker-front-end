@@ -3,7 +3,15 @@ import { IReportCategoriesAndTypesParameters } from "types";
 
 // todo: Define a good type. "Any" type temporarily permitted.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const ReportParameters = ({ values, setFieldValue, categoriesAndTypes, touched, errors }: any) => {
+export const ReportParameters = ({
+  values,
+  setFieldValue,
+  categoriesAndTypes,
+  touched,
+  errors,
+}: // todo: Define a good type. "Any" type temporarily permitted.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+any) => {
   const renderComponent = (parameter: IReportCategoriesAndTypesParameters) => {
     const { label, required } = parameter;
 
