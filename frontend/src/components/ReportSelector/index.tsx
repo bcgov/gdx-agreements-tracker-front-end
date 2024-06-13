@@ -16,6 +16,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { ReportParameters } from "./ReportParameters";
 import { ReportTypes } from "./ReportTypes";
 import { handleReportExport } from "../../utils/handleReportExport";
+import { object, string, number } from "yup";
 
 const ReportSelector = () => {
   const [typeDescription, setTypeDescription] = useState<string | undefined>("");
@@ -36,6 +37,28 @@ const ReportSelector = () => {
       handleReportExport(values);
     },
     initialValues: initialValues,
+    validationSchema: object().shape({
+      fiscalFrom: object({ value: number(), label: string() }),
+      fiscalTo: object({ value: number().required(), label: string().required() })
+        .required()
+        .test(
+          "fiscalTo-greater-than-fiscalFrom",
+          "Fiscal To must be greater than Fiscal From",
+          (value, { parent }) => {
+            const fiscalFrom = parent.fiscalFrom.label;
+            const fiscalTo = value.label;
+
+            if (!fiscalTo) return;
+
+            // Extract the year from the fiscal period (e.g. "14-15" -> 14)
+            const fiscalFromYear = parseInt(fiscalFrom.split("-")[0], 10);
+            const fiscalToYear = parseInt(fiscalTo.split("-")[0], 10);
+            // Check if fiscalTo is greater than or equal to fiscalFrom
+
+            return fiscalToYear >= fiscalFromYear;
+          }
+        ),
+    }),
   });
 
   const resetAllParameters = () => {
@@ -48,7 +71,7 @@ const ReportSelector = () => {
     setFieldValue("project_type", null);
   };
 
-  const { setFieldValue, values, handleSubmit, touched } = formik;
+  const { setFieldValue, values, handleSubmit, touched, errors } = formik;
 
   const handleCategoryChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setFieldValue("category", event.target.value);
@@ -142,7 +165,7 @@ const ReportSelector = () => {
           </Grid>
           <Grid xs={12} sm={12} md={12}>
             {values.type && (
-              <Card sx={{ minWidth: 275 }}>
+              <Card>
                 <CardContent>
                   <Typography color="text.secondary" gutterBottom>
                     Parameters
@@ -152,6 +175,7 @@ const ReportSelector = () => {
                     setFieldValue={setFieldValue}
                     categoriesAndTypes={categoriesAndTypes}
                     touched={touched}
+                    errors={errors}
                   />
                   <CardActions>
                     <Button

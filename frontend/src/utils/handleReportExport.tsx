@@ -1,11 +1,15 @@
 import { ConvertToStringItem, UpdatedSearchParams } from "types";
 import { apiAxios } from "utils";
 
-const convertValueToString = (item: ConvertToStringItem) => {
+const convertValueToString = (item: ConvertToStringItem, key: string) => {
   if (Array.isArray(item)) {
     return item.map((item) => item.value).join(",");
   }
   if ("object" === typeof item) {
+    if ("fiscalFrom" === key || "fiscalTo" === key) {
+      return item.label;
+    }
+
     return JSON.stringify(item.value);
   }
   return String(item);
@@ -16,7 +20,7 @@ export const handleReportExport = (values: { [key: string]: string | null }) => 
 
   Object.entries(values).forEach(([key, item]) => {
     if (!item || 0 === item.length) return;
-    updatedSearchParams[key] = convertValueToString(item);
+    updatedSearchParams[key] = convertValueToString(item, key);
   });
 
   const querystringParams = new URLSearchParams(updatedSearchParams);

@@ -3,7 +3,15 @@ import { IReportCategoriesAndTypesParameters } from "types";
 
 // todo: Define a good type. "Any" type temporarily permitted.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const ReportParameters = ({ values, setFieldValue, categoriesAndTypes, touched }: any) => {
+export const ReportParameters = ({
+  values,
+  setFieldValue,
+  categoriesAndTypes,
+  touched,
+  errors,
+}: // todo: Define a good type. "Any" type temporarily permitted.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+any) => {
   const renderComponent = (parameter: IReportCategoriesAndTypesParameters) => {
     const { label, required } = parameter;
 
@@ -24,6 +32,38 @@ export const ReportParameters = ({ values, setFieldValue, categoriesAndTypes, to
             setFieldValue={setFieldValue}
             required={required}
           />
+        );
+
+      case "multiFiscal":
+        return (
+          <>
+            <FormInput
+              touched={touched}
+              key={`${label}`}
+              fieldName="fiscalFrom"
+              fieldType={"select"}
+              fieldLabel="Fiscal From"
+              width={"half"}
+              pickerName="fiscal_year_option"
+              fieldValue={values.fiscalFrom}
+              setFieldValue={setFieldValue}
+              required={required}
+              errors={errors}
+            />
+            <FormInput
+              touched={touched}
+              key={`${label}`}
+              fieldName="fiscalTo"
+              fieldType={"select"}
+              fieldLabel="Fiscal To"
+              width={"half"}
+              pickerName="fiscal_year_option"
+              fieldValue={values.fiscalTo}
+              setFieldValue={setFieldValue}
+              required={required}
+              errors={errors}
+            />
+          </>
         );
 
       case "portfolio":

@@ -525,6 +525,7 @@ export interface ITableHealthChip {
 export type ConvertToStringItem =
   | {
       value: string | null;
+      label: string;
     }
   | string;
 
