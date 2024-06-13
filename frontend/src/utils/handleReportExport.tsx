@@ -3,12 +3,14 @@ import { apiAxios } from "utils";
 
 const convertValueToString = (item: ConvertToStringItem, key: string) => {
   if (Array.isArray(item)) {
-    console.log("key", key);
     return item.map((item) => item.value).join(",");
   }
   if ("object" === typeof item) {
-    const value = key !== "fiscalFrom" && key !== "fiscalTo" ? item.value : item.label;
-    return JSON.stringify(value);
+    if (key === "fiscalFrom" || key === "fiscalTo") {
+      return item.label;
+    }
+
+    return JSON.stringify(item.value);
   }
   return String(item);
 };

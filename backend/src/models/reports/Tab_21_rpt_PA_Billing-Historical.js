@@ -8,18 +8,20 @@ const { knex } = dbConnection();
  * @returns {Knex.QueryBuilder}        Knex query builder for fetching report data.
  */
 const queries = {
-  fiscal_years_to_from: (fiscalFrom, fiscalTo) => {
-    return {
-      fiscalFrom: fiscalFrom,
-      fiscalTo: fiscalTo,
-    };
+  fiscalToFrom: (fiscalFrom, fiscalTo) => {
+    return knex("tab_21_recoverables_by_fiscal")
+      .select("budget_fiscal")
+      .where("budget_fiscal", ">=", fiscalFrom)
+      .andWhere("budget_fiscal", "<=", fiscalTo)
+      .groupBy("budget_fiscal");
   },
   recoveries: (fiscalFrom, fiscalTo) => {
     return knex("tab_21_recoverables_by_fiscal")
       .select("*")
-      .whereBetween("budget_fiscal", [fiscalFrom, fiscalTo]);
+      .where("budget_fiscal", ">=", fiscalFrom)
+      .andWhere("budget_fiscal", "<=", fiscalTo);
   },
-  fiscal_grand_totals: (fiscalFrom, fiscalTo) => {
+  fiscalGrandTotals: (fiscalFrom, fiscalTo) => {
     return knex
       .select(
         knex.raw("SUM(total_recovered) as recovered_total"),
@@ -30,8 +32,20 @@ const queries = {
         "budget_fiscal"
       )
       .from("data.tab_21_recoverables_by_fiscal")
-      .whereBetween("budget_fiscal", [fiscalFrom, fiscalTo])
+      .where("budget_fiscal", ">=", fiscalFrom)
+      .andWhere("budget_fiscal", "<=", fiscalTo)
       .groupBy("fiscal_id", "budget_fiscal");
+  },
+  multiFiscalGrandTotals: (fiscalFrom, fiscalTo) => {
+    return knex("tab_21_recoverables_by_fiscal")
+      .sum("q1 as q1")
+      .sum("q2 as q2")
+      .sum("q3 as q3")
+      .sum("q4 as q4")
+      .sum("total_recovered as total_recovered")
+      .where("budget_fiscal", ">=", fiscalFrom)
+      .andWhere("budget_fiscal", "<=", fiscalTo)
+      .first();
   },
 };
 
@@ -55,15 +69,19 @@ const combineFiscalTotals = (totalsByFiscal, reportSection) => {
 module.exports = {
   required: ["fiscalFrom", "fiscalTo"],
   getAll: async ({ fiscalFrom, fiscalTo }) => {
-    const [reportFiscalYearsToFrom, reportRecoveries, reportFiscalGrandTotals] = await Promise.all([
-      queries.fiscal_years_to_from(fiscalFrom, fiscalTo),
-      queries.recoveries(fiscalFrom, fiscalTo),
-      queries.fiscal_grand_totals(fiscalFrom, fiscalTo),
-    ]);
+    const [reportRecoveries, reportFiscalGrandTotals, reportMultiFiscalGrandTotals, fiscalToFrom] =
+      await Promise.all([
+        queries.recoveries(fiscalFrom, fiscalTo),
+        queries.fiscalGrandTotals(fiscalFrom, fiscalTo),
+        queries.multiFiscalGrandTotals(fiscalFrom, fiscalTo),
+        queries.fiscalToFrom(fiscalFrom, fiscalTo),
+      ]);
 
     return {
-      reportFiscalYearsToFrom,
       reportRecoveriesWithTotals: combineFiscalTotals(reportFiscalGrandTotals, reportRecoveries),
+      reportMultiFiscalGrandTotals,
+      fiscalFrom,
+      fiscalTo,
     };
   },
 };

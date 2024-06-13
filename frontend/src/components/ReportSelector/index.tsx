@@ -38,7 +38,7 @@ const ReportSelector = () => {
     },
     initialValues: initialValues,
     validationSchema: object().shape({
-      fiscalFrom: object({ value: number().required(), label: string().required() }).required(),
+      fiscalFrom: object({ value: number(), label: string() }),
       fiscalTo: object({ value: number().required(), label: string().required() })
         .required()
         .test(
@@ -48,12 +48,13 @@ const ReportSelector = () => {
             const fiscalFrom = parent.fiscalFrom.label;
             const fiscalTo = value.label;
 
+            if (!fiscalTo) return;
+
             // Extract the year from the fiscal period (e.g. "14-15" -> 14)
             const fiscalFromYear = parseInt(fiscalFrom.split("-")[0], 10);
             const fiscalToYear = parseInt(fiscalTo.split("-")[0], 10);
             // Check if fiscalTo is greater than or equal to fiscalFrom
 
-            console.log('fiscalToYear >= fiscalFromYear;', fiscalToYear >= fiscalFromYear)
             return fiscalToYear >= fiscalFromYear;
           }
         ),
@@ -164,7 +165,7 @@ const ReportSelector = () => {
           </Grid>
           <Grid xs={12} sm={12} md={12}>
             {values.type && (
-              <Card >
+              <Card>
                 <CardContent>
                   <Typography color="text.secondary" gutterBottom>
                     Parameters
