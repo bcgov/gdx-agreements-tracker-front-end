@@ -1,19 +1,28 @@
 // Libs
 const dbConnection = require("@database/databaseConnection");
 const { knex } = dbConnection();
+const log = require("../../facilities/logging")(module.filename);
 
+// Constants
+const { dateFormatShortYear } = require("@helpers/standards");
+
+// Utilities
+const getFormattedDate = (date) => knex.raw(`TO_CHAR(${date}, '${dateFormatShortYear}')`);
+
+// Queries for the report sections needed by the controller
 const queries = {
+  // Headers for the report.
   project: (project_id) =>
-    knex("data.projects_with_json as p")
+    knex(`data.projects_with_json as p`)
       .select({
-        current_date: knex.raw(`TO_CHAR(NOW(), 'dd-Mon-yy')`), // Formatted current date
+        current_date: getFormattedDate("NOW()"),
         project_name: knex.raw("p.project_number || ': ' || p.project_name"),
-        project_manager: knex.raw("c.last_name || ', ' || c.first_name"),
+        project_manager: knex.raw("c.first_name || ' ' || c.last_name"),
         portfolio_label: knex.raw("p.portfolio_id::json ->> 'label'"), // Extracted portfolio label
         budget: "p.total_project_budget",
         gdx_executive: "gdx_exec.name",
-        start_date: knex.raw(`TO_CHAR(p.agreement_start_date, 'dd-Mon-yy')`),
-        end_date: knex.raw(`TO_CHAR(p.agreement_end_date, 'dd-Mon-yy')`),
+        start_date: getFormattedDate("p.agreement_start_date"),
+        end_date: getFormattedDate("p.agreement_end_date"),
         client_executive: "client_exec.name",
         ministry_label: knex.raw("p.ministry_id::json ->> 'label'"), // Extracted ministry Label.
         description: "p.description",
@@ -22,9 +31,9 @@ const queries = {
       .leftJoin(`data.contact as c`, "p.project_manager", "c.id")
       .leftJoin(
         function () {
-          this.select("cp.project_id", knex.raw("c.last_name || ', ' || c.first_name as name"))
-            .from("contact_project as cp")
-            .join("contact as c", "cp.contact_id", "c.id")
+          this.select("cp.project_id", knex.raw("c.first_name || ' ' || c.last_name as name"))
+            .from(`data.contact_project as cp`)
+            .join(`data.contact as c`, "cp.contact_id", "c.id")
             .where("cp.contact_role", 4) // GDX Executive Sponsor role is 4.
             .andWhere("cp.project_id", project_id)
             .as("gdx_exec");
@@ -34,8 +43,8 @@ const queries = {
       )
       .leftJoin(
         function () {
-          this.select("cp.project_id", knex.raw("c.last_name || ', ' || c.first_name as name"))
-            .from("contact_project as cp")
+          this.select("cp.project_id", knex.raw("c.first_name || ' ' || c.last_name as name"))
+            .from(`data.contact_project as cp`)
             .join("contact as c", "cp.contact_id", "c.id")
             .where("cp.contact_role", 1) // Client sponsor role is 1.
             .andWhere("cp.project_id", project_id)
@@ -46,82 +55,131 @@ const queries = {
       )
       .where("p.id", project_id)
       .first(),
+
+  // Strategic alignment under project goals.
   alignment: (project_id) =>
-    knex("data.project_strategic_alignment as psa")
+    knex(`data.project_strategic_alignment as psa`)
       .select({ description: "sa.description" })
-      .leftJoin("data.strategic_alignment as sa", "psa.strategic_alignment_id", "sa.id")
+      .leftJoin(`data.strategic_alignment as sa`, "psa.strategic_alignment_id", "sa.id")
       .where({
         "psa.project_id": project_id,
         "psa.checked": true,
-      }),
+      })
+      .first(),
 
+  // Project status (Only gets the latest project status)
   status: (project_id) =>
-    knex(`data.project_status as ps`)
-      .select(
-        {
-          status_date: knex.raw(`TO_CHAR(ps.status_date, 'dd-Mon-yy')`),
-          project_health: "health.health_name",
-          project_red: "health.colour_red",
-          project_green: "health.colour_green",
-          project_blue: "health.colour_blue",
-          reported_by: knex.raw("reported_by.last_name || ', ' || reported_by.first_name"),
-          project_phase: "phase.phase_name",
-        },
-        {
-          team_health: "team.health_name",
-          team_red: "team.colour_red",
-          team_green: "team.colour_green",
-          team_blue: "team.colour_blue",
-        },
-        {
-          budget_health: "budget.health_name",
-          budget_red: "budget.colour_red",
-          budget_green: "budget.colour_green",
-          budget_blue: "budget.colour_blue",
-        },
-        {
-          schedule_health: "schedule.health_name",
-          schedule_red: "schedule.colour_red",
-          schedule_green: "schedule.colour_green",
-          schedule_blue: "schedule.colour_blue",
-        },
-        {
-          general_progress_comments: "ps.general_progress_comments",
-          issues_and_decisions: "ps.issues_and_decisions",
-          forecast_and_next_steps: "ps.forecast_and_next_steps",
-          identified_risk: "ps.identified_risk",
-        }
-      )
-      .leftJoin(`data.project_phase as phase`, "ps.project_phase_id", "phase.id")
-      .leftJoin(`data.health_indicator as health`, "ps.health_id", "health.id")
-      .leftJoin(`data.health_indicator as schedule`, "ps.schedule_health_id", "schedule.id")
-      .leftJoin(`data.health_indicator as budget`, "ps.budget_health_id", "budget.id")
-      .leftJoin(`data.health_indicator as team`, "ps.team_health_id", "team.id")
-      .leftJoin(`data.contact as reported_by`, "ps.reported_by_contact_id", "reported_by.id")
+    knex("data.project_status as ps")
+      .select([
+        knex.raw(`TO_CHAR(ps.status_date, 'dd-Mon-yy') AS status_date`),
+        knex.raw(`reported_by.first_name || ' ' || reported_by.last_name AS reported_by`),
+        "phase.phase_name AS project_phase",
+        "health.health_name AS project_health",
+        knex.raw(
+          "CONCAT(health.colour_red, ',', health.colour_green, ',', health.colour_blue) AS colour_project"
+        ),
+        "team.health_name AS team_health",
+        knex.raw(
+          "CONCAT(team.colour_red, ',', team.colour_green, ',', team.colour_blue) AS colour_team"
+        ),
+        "budget.health_name AS budget_health",
+        knex.raw(
+          "CONCAT(budget.colour_red, ',', budget.colour_green, ',', budget.colour_blue) AS colour_budget"
+        ),
+        "schedule.health_name AS schedule_health",
+        knex.raw(
+          "CONCAT(schedule.colour_red, ',', schedule.colour_green, ',', schedule.colour_blue) AS colour_schedule"
+        ),
+        "ps.general_progress_comments AS general_progress_comments",
+        "ps.issues_and_decisions AS issues_and_decisions",
+        "ps.forecast_and_next_steps AS forecast_and_next_steps",
+        "ps.identified_risk AS identified_risk",
+      ])
+      .leftJoin("data.project_phase as phase", "ps.project_phase_id", "phase.id")
+      .leftJoin("data.health_indicator as health", "ps.health_id", "health.id")
+      .leftJoin("data.health_indicator as schedule", "ps.schedule_health_id", "schedule.id")
+      .leftJoin("data.health_indicator as budget", "ps.budget_health_id", "budget.id")
+      .leftJoin("data.health_indicator as team", "ps.team_health_id", "team.id")
+      .leftJoin("data.contact as reported_by", "ps.reported_by_contact_id", "reported_by.id")
       .where("ps.project_id", project_id)
       .orderBy("ps.status_date", "desc")
       .first(),
+
+  // All deliverables for this project's status and completion
+  deliverables: (project_id) =>
+    knex
+      .select(
+        "pd.id",
+        "p.id as project_id",
+        knex.raw(
+          "CASE WHEN pd.id IS NULL THEN 'No Deliverables' ELSE pd.deliverable_name END as deliverable_name"
+        ),
+        { start_date: getFormattedDate("pd.start_date") },
+        { completion_date: getFormattedDate("pd.completion_date") },
+        "pd.deliverable_amount",
+        { percent_complete: knex.raw("?? * 100", ["pd.percent_complete"]) },
+        knex.raw(
+          "CONCAT(hi.colour_red, ',', hi.colour_green, ',', hi.colour_blue) AS colour_health"
+        ),
+        "pd.deliverable_status"
+      )
+      .from(`data.project as p`)
+      .leftJoin(`data.project_deliverable as pd`, "p.id", "pd.project_id")
+      .leftJoin(`data.health_indicator as hi`, "hi.id", "pd.health_id")
+      .where(function () {
+        this.where("pd.is_expense", false).orWhereNull("pd.is_expense");
+      })
+      .andWhere("p.id", project_id),
+
+  milestones: (project_id) =>
+    knex(`data.project_milestone as pm`)
+      .select(
+        "project_id",
+        "description",
+        "fiscal_id",
+        { target_completion_date: getFormattedDate("target_completion_date") },
+        { actual_completion_date: getFormattedDate("actual_completion_date") },
+
+        "status",
+        "health_id"
+      )
+      .where({ project_id: project_id }),
 };
 
-// standard Models
-const {
-  projectStatusReport, // deliverables
-  getMilestones, // milestones
-} = require("@models/reports/useProject");
+/**
+ * Retrieve and process data from queries to create a structured result object.
+ *
+ * @param   {object} options         - Options object containing fiscal year.
+ * @param   {string} options.project - The project id to filter on project id.  This param may be called project_id.
+ * @returns {object}                 - An object containing fiscal year, report, and report total.
+ */
+const getAll = async ({ project: project_id }) => {
+  try {
+    // Await all promises in parallel
+    const [projectData, alignmentData, statusData, deliverablesData, milestonesData] =
+      await Promise.all([
+        queries.project(project_id),
+        queries.alignment(project_id),
+        queries.status(project_id),
+        queries.deliverables(project_id),
+        queries.milestones(project_id),
+      ]);
 
-// TODO:
-/*
-replace queries for report Data
-DONE 1) project status
-2) deliverables
-3) milestones
-*/
+    // Take the grouped data with totals and return it to the Controller.
+    return {
+      project: projectData,
+      alignment: alignmentData,
+      status: statusData,
+      deliverables: deliverablesData,
+      milestones: milestonesData,
+    };
+  } catch (error) {
+    log.error(error);
+    throw error;
+  }
+};
 
-// Exports the data in sections,  in the order we will use it with the template.
 module.exports = {
-  project: queries.project, // project section
-  alignment: queries.alignment, // alignment section
-  status: queries.status, // status section
-  deliverables: projectStatusReport, // deliverables section
-  milestones: getMilestones, // milestones section
+  required: ["project"],
+  getAll,
 };
