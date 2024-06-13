@@ -1,6 +1,7 @@
 const dbConnection = require("@database/databaseConnection");
 const { knex } = dbConnection();
 const { fiscalYearTable } = require("@models/useDbTables");
+const { whereInArray } = require("./helpers");
 
 /**
  * Retrieves the data for various financial metrics based on the fiscal year.
@@ -15,7 +16,7 @@ const queries = {
   },
 
   report: (fiscal, portfolio) => {
-    let report = knex
+     return knex
       .select("*")
       .fromRaw(
         `
@@ -67,7 +68,7 @@ const queries = {
         ) --end stob_base
 
       -- select columns from stob_base
-      SELECT Portfolio_Name,
+      SELECT Portfolio_ID, Portfolio_Name,
         Q1_Amount + Q2_Amount + Q3_Amount + Q4_Amount as total_recoveries,
         Q1_Expenses + Q2_Expenses + Q3_Expenses + Q4_Expenses as less_all_project_expenses,
         (Q1_Amount + Q2_Amount + Q3_Amount + Q4_Amount) - (Q1_Expenses + Q2_Expenses + Q3_Expenses + Q4_Expenses) as net_recoveries,
@@ -85,12 +86,11 @@ const queries = {
         fiscal
       ) as q`
       )
-      .where("q.fiscal", fiscal)
-      if (portfolio) report.whereIn("portfolio_id", portfolio) // need to add logic for multiple ids
-      return report;
+      .modify(whereInArray, "portfolio_id", portfolio)
+      .where("q.fiscal", fiscal);
   },
 
-  totals: (fiscal) => {
+  totals: (fiscal, portfolio) => {
     return knex
       .select("*")
       .fromRaw(
@@ -143,7 +143,7 @@ const queries = {
     ) --end stob_base
 
   -- select columns from stob_base
-  SELECT sum(Q1_Amount + Q2_Amount + Q3_Amount + Q4_Amount) as totals_recoveries,
+  SELECT Portfolio_ID, sum(Q1_Amount + Q2_Amount + Q3_Amount + Q4_Amount) as totals_recoveries,
     sum(Q1_Expenses + Q2_Expenses + Q3_Expenses + Q4_Expenses) as totals_less_all_project_expenses,
     sum((Q1_Amount + Q2_Amount + Q3_Amount + Q4_Amount) - (Q1_Expenses + Q2_Expenses + Q3_Expenses + Q4_Expenses)) as totals_net_recoveries,
     sum(Q1_Amount) as totals_q1_gross,
@@ -156,11 +156,11 @@ const queries = {
     sum(Q4_Amount - Q4_Expenses) as totals_q4_net,
     fiscal
   FROM stob_base
-  GROUP BY fiscal
+  GROUP BY fiscal, stob_base.portfolio_id
   ) as q`
       )
       .where("q.fiscal", fiscal)
-      handleParams(query, requestParams);
+      .modify(whereInArray, "portfolio_id", portfolio);
   },
 };
 
@@ -169,7 +169,6 @@ module.exports = {
   getAll: async (query) => {
     try {
       const { fiscal, portfolio } = query;
-      console.log("123abc",portfolio);
       const [[{ fiscal_year }], report, report_totals] = await Promise.all([
         queries.fiscalYear(fiscal),
         queries.report(fiscal, portfolio),
