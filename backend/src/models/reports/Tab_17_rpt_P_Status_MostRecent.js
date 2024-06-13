@@ -27,6 +27,13 @@ const queries = {
         ministry_label: knex.raw("p.ministry_id::json ->> 'label'"), // Extracted ministry Label.
         description: "p.description",
         goals: "p.project_goals",
+        strategic_alignment: knex.raw(`
+        (SELECT sa.description
+         FROM data.project_strategic_alignment psa
+         JOIN data.strategic_alignment sa ON psa.strategic_alignment_id = sa.id
+         WHERE psa.project_id = p.id AND psa.checked = true
+         LIMIT 1)
+      `),
       })
       .leftJoin(`data.contact as c`, "p.project_manager", "c.id")
       .leftJoin(
@@ -54,17 +61,6 @@ const queries = {
         "client_exec.project_id"
       )
       .where("p.id", project_id)
-      .first(),
-
-  // Strategic alignment under project goals.
-  alignment: (project_id) =>
-    knex(`data.project_strategic_alignment as psa`)
-      .select("strategic_alignment.description")
-      .leftJoin("data.strategic_alignment", "psa.strategic_alignment_id", "strategic_alignment.id")
-      .where({
-        "psa.checked": true,
-        "psa.project_id": project_id,
-      })
       .first(),
 
   // Project status (Only gets the latest project status)
@@ -111,12 +107,12 @@ const queries = {
         "ps.forecast_and_next_steps AS forecast_and_next_steps",
         "ps.identified_risk AS identified_risk",
       ])
-      .leftJoin("data.project_phase as phase", "ps.project_phase_id", "phase.id")
-      .leftJoin("data.health_indicator as health", "ps.health_id", "health.id")
-      .leftJoin("data.health_indicator as schedule", "ps.schedule_health_id", "schedule.id")
-      .leftJoin("data.health_indicator as budget", "ps.budget_health_id", "budget.id")
-      .leftJoin("data.health_indicator as team", "ps.team_health_id", "team.id")
-      .leftJoin("data.contact as reported_by", "ps.reported_by_contact_id", "reported_by.id")
+      .join("data.project_phase as phase", "ps.project_phase_id", "phase.id")
+      .join("data.health_indicator as health", "ps.health_id", "health.id")
+      .join("data.health_indicator as schedule", "ps.schedule_health_id", "schedule.id")
+      .join("data.health_indicator as budget", "ps.budget_health_id", "budget.id")
+      .join("data.health_indicator as team", "ps.team_health_id", "team.id")
+      .join("data.contact as reported_by", "ps.reported_by_contact_id", "reported_by.id")
       .where("ps.project_id", project_id)
       .orderBy("ps.status_date", "desc")
       .first(),
@@ -144,8 +140,8 @@ const queries = {
         "pd.deliverable_status"
       )
       .from(`data.project as p`)
-      .leftJoin(`data.project_deliverable as pd`, "p.id", "pd.project_id")
-      .leftJoin(`data.health_indicator as hi`, "hi.id", "pd.health_id")
+      .join(`data.project_deliverable as pd`, "p.id", "pd.project_id")
+      .join(`data.health_indicator as hi`, "hi.id", "pd.health_id")
       .where(function () {
         this.where("pd.is_expense", false).orWhereNull("pd.is_expense");
       })
@@ -182,19 +178,16 @@ const queries = {
 const getAll = async ({ project: project_id }) => {
   try {
     // Await all promises in parallel
-    const [projectData, alignmentData, statusData, deliverablesData, milestonesData] =
-      await Promise.all([
-        queries.project(project_id),
-        queries.alignment(project_id),
-        queries.status(project_id),
-        queries.deliverables(project_id),
-        queries.milestones(project_id),
-      ]);
+    const [projectData, statusData, deliverablesData, milestonesData] = await Promise.all([
+      queries.project(project_id),
+      queries.status(project_id),
+      queries.deliverables(project_id),
+      queries.milestones(project_id),
+    ]);
 
     // Take the grouped data with totals and return it to the Controller.
     return {
       project: projectData,
-      alignment: alignmentData,
       status: statusData,
       deliverables: deliverablesData,
       milestones: milestonesData,
