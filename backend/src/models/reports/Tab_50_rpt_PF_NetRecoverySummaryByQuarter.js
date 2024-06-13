@@ -8,6 +8,18 @@ const { fiscalYearTable } = require("@models/useDbTables");
  * @param   {number | string | Array} fiscal - The fiscal year(s) to retrieve totals for.
  * @returns {Promise}                        - A promise that resolves to the query result containing the totals for recoveries, expenses, net recoveries, and quarterly gross and net amounts.
  */
+const handleParams = (query, requestParams) => {
+  if (requestParams.portfolio) {
+    const portfolio = requestParams.portfolio;
+
+    if (requestParams.portfolio instanceof Array) {
+      query.whereIn("portfolio_id", portfolio);
+    } else {
+      query.where("portfolio_id", portfolio);
+    }
+  }
+};
+
 const queries = {
   fiscalYear: (fiscal) => {
     return knex.select("fiscal_year").from(fiscalYearTable).where("fiscal_year.id", fiscal);
@@ -156,7 +168,8 @@ const queries = {
   GROUP BY fiscal
   ) as q`
       )
-      .where("q.fiscal", fiscal);
+      .where("q.fiscal", fiscal)
+      handleParams(query, requestParams);
   },
 };
 

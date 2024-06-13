@@ -329,7 +329,10 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
         label: "Net Recovery Summary By Quarter",
         description:
           "Run for a specific fiscal, grouped by Portfolio. Shows both Net and Gross recoveries per portfolio, and includes quarterly recoveries as well as fiscal year totals for expenses.",
-        parameters: [{ label: "fiscal", required: true }],
+        parameters: [
+          { label: "portfolio", required: false },
+          { label: "fiscal", required: true },
+      ],
         exportPDF: true,
         exportXLSX: true,
       },
