@@ -81,8 +81,8 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
         description:
           "Project #, Project Name, Project Manager, Description, Project Type, Start and End Date, Planned Budget and Client Ministry.",
         parameters: [{ label: "portfolio", required: false }],
-        exportPDF: true,
-        exportXLSX: false,
+        exportPDF: false,
+        exportXLSX: true,
       },
       {
         value: "Tab_22_rpt_PA_ChangeRequestTypesFY-Summary",
