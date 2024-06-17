@@ -25,6 +25,7 @@ controller.Tab_49_rpt_PF_NetRecoveries = async (request, reply) => {
     const [{ fiscal_year }] = await model.getFiscalYear(request.query);
     const report = await model.Tab_49_rpt_PF_NetRecoveries(request.query);
     const report_totals = await model.Tab_49_totals(request.query);
+    const current_date = await getCurrentDate();
 
     // shape the dataset so it can be parsed by the templating engine properly
     const reportByPortfolio = groupByProperty(report, "portfolio_name");
@@ -38,6 +39,7 @@ controller.Tab_49_rpt_PF_NetRecoveries = async (request, reply) => {
       fiscal: fiscal_year,
       report_date: await getCurrentDate(),
       report: reportsByPortfolioWithTotals,
+      date: current_date,
     };
 
     const body = await getDocumentApiBody(result, "Tab_49_rpt_PF_NetRecoveries.docx");
