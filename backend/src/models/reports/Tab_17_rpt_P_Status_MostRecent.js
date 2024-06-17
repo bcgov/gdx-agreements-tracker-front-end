@@ -16,8 +16,8 @@ const queries = {
     knex(`data.projects_with_json as p`)
       .select({
         current_date: getFormattedDate("NOW()"),
-        project_name: knex.raw("p.project_number || ': ' || p.project_name"),
-        project_manager: knex.raw("c.first_name || ' ' || c.last_name"),
+        project_name: knex.raw(`CONCAT(p.project_number, ': ', p.project_name)`),
+        project_manager: knex.raw(`CONCAT(c.first_name, ' ', c.last_name)`),
         portfolio_label: knex.raw("p.portfolio_id::json ->> 'label'"), // Extracted portfolio label
         budget: "p.total_project_budget",
         gdx_executive: "gdx_exec.name",
@@ -38,7 +38,7 @@ const queries = {
       .leftJoin(`data.contact as c`, "p.project_manager", "c.id")
       .leftJoin(
         function () {
-          this.select("cp.project_id", knex.raw("c.first_name || ' ' || c.last_name as name"))
+          this.select("cp.project_id", knex.raw(`CONCAT(c.first_name, ' ' , c.last_name) as name`))
             .from(`data.contact_project as cp`)
             .join(`data.contact as c`, "cp.contact_id", "c.id")
             .where("cp.contact_role", 4) // GDX Executive Sponsor role is 4.
@@ -50,7 +50,7 @@ const queries = {
       )
       .leftJoin(
         function () {
-          this.select("cp.project_id", knex.raw("c.first_name || ' ' || c.last_name as name"))
+          this.select("cp.project_id", knex.raw(`CONCAT(c.first_name, ' ' ,c.last_name) as name`))
             .from(`data.contact_project as cp`)
             .join("contact as c", "cp.contact_id", "c.id")
             .where("cp.contact_role", 1) // Client sponsor role is 1.
@@ -68,7 +68,7 @@ const queries = {
     knex("data.project_status as ps")
       .select([
         knex.raw(`TO_CHAR(ps.status_date, 'dd-Mon-yy') AS status_date`),
-        knex.raw(`reported_by.first_name || ' ' || reported_by.last_name AS reported_by`),
+        knex.raw(`CONCAT(reported_by.first_name, ' ', reported_by.last_name) AS reported_by`),
         "phase.phase_name AS project_phase",
         "health.health_name AS project_health",
         "team.health_name AS team_health",
