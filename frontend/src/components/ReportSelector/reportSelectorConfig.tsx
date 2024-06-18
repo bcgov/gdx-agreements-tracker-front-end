@@ -42,8 +42,8 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
         description:
           "Runs on Project #, Shows information: Sponsorship, Start/End Date, Strategic Alignment, Project Description, Goals, status reporting, deliverable status and milestone status.",
         parameters: [{ label: "project", required: true }],
-        exportPDF: true,
-        exportXLSX: false,
+        exportPDF: false,
+        exportXLSX: true,
       },
       {
         value: "Tab_18_rpt_P_StatusSummary",
