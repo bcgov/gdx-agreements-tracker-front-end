@@ -49,6 +49,7 @@ const queries = {
       .groupBy("invoice_number")
       .orderBy("invoice_number"),
 
+  // see: https://localhost:3000/contracts/1620
   contractPayments: (contract) =>
     knex("invoice_detail as detail")
       .select({
