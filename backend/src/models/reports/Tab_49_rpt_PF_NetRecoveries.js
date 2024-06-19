@@ -1,6 +1,10 @@
 const dbConnection = require("@database/databaseConnection");
 const { knex } = dbConnection();
 const required = ["fiscal"];
+const utils = require("./helpers");
+const _ = require("lodash");
+const { groupByProperty } = utils;
+
 const handleParams = (query, requestParams) => {
   if (requestParams.portfolio) {
     const portfolio = requestParams.portfolio;
@@ -12,7 +16,6 @@ const handleParams = (query, requestParams) => {
     }
   }
 };
-
 // get the fiscal year based on the id passed from frontend
 
 /**
@@ -23,10 +26,8 @@ const handleParams = (query, requestParams) => {
  */
 
 const queries = {
-
   getFiscalYear: (requestParams) => {
     const query = knex.select(knex.raw(`fiscal_year from data.fiscal_year`));
-  
     if (requestParams.fiscal) {
       query.where({ "fiscal_year.id": requestParams.fiscal });
     }
@@ -284,12 +285,7 @@ const queries = {
 };
 
 module.exports = {
-  // getFiscalYear,
-  // Tab_49_rpt_PF_NetRecoveries,
-  // Tab_49_totals,
   getAll: async (query) => {
-    console.log("reached GetAll");
-    console.log(JSON.stringify(query));
     try {
       const { fiscal } = query;
       const [[{ fiscal_year }], report, report_totals] = await Promise.all([
@@ -298,9 +294,16 @@ module.exports = {
         queries.Tab_49_totals(query),
       ]);
 
+      const reportByPortfolio = groupByProperty(report, "portfolio_name");
+      const totalsByPortfolio = _.keyBy(report_totals, "portfolio_name");
+      const reportsByPortfolioWithTotals = _.map(reportByPortfolio, (portfolio) => ({
+        ...portfolio,
+        portfolio_totals: totalsByPortfolio[portfolio.portfolio_name],
+      }));
+
       return {
         fiscal: fiscal_year,
-        report,
+        report: reportsByPortfolioWithTotals,
         report_totals,
       };
     } catch (error) {
