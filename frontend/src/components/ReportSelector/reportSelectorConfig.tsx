@@ -321,7 +321,7 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
           { label: "portfolio", required: false },
           { label: "fiscal", required: true },
         ],
-        exportPDF: true,
+        exportPDF: false,
         exportXLSX: true,
       },
       {
