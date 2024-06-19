@@ -61,7 +61,8 @@ const queries = {
       .leftJoin("contract", { "contract.id": "invoice.contract_id" })
       .leftJoin("fiscal_year as fiscal", { "fiscal.id": "invoice.fiscal" })
       .where({ "invoice.contract_id": contract })
-      .groupBy("fiscal.id"),
+      .groupBy("fiscal.id")
+      .debug(),
 
   contractAmendments: (contract) =>
     knex("contract_amendment")
