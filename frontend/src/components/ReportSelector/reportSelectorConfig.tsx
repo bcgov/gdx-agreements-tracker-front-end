@@ -322,7 +322,7 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
           { label: "fiscal", required: true },
         ],
         exportPDF: true,
-        exportXLSX: false,
+        exportXLSX: true,
       },
       {
         value: "Tab_50_rpt_PF_NetRecoverySummaryByQuarter",
