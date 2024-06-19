@@ -29,6 +29,7 @@ const queries = {
       .leftJoin("data.project_budget as pb", "pd.id", "pb.project_deliverable_id")
       .leftJoin("data.client_coding as cc", "cc.id", "pb.client_coding_id")
       .leftJoin("data.portfolio as port", "port.id", "pb.recovery_area")
+      .leftJoin("data.contact as con", "cc.contact_id", "con.id")
       .where("pd.project_id", project_id),
 
   genericSumQuery: (project_id, selectFields, groupByFields = []) =>
@@ -61,7 +62,7 @@ const queries = {
         responsibility: "responsibility",
         service_line: "port.service_line",
         stob: "pb.stob",
-        expense_authority_name: "cc.expense_authority_name",
+        financial_contact_name: knex.raw("con.first_name || ' ' || con.last_name"),
         fiscal_year: "fiscal_year",
         client: "pb.client_coding_id",
       })
