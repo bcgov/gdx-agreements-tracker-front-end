@@ -1,45 +1,118 @@
-const dbConnection = require("@database/databaseConnection");
-const { knex } = dbConnection();
+// Libs
+const { knex } = require("@database/databaseConnection")();
+const log = require("../../facilities/logging")(module.filename);
+const { whereInArray } = require("./helpers");
+
+const queries = {
+  lessonsLearned: (projectId, portfolio, fiscal) => {
+    return knex
+      .select(
+        "lc.lesson_category_name",
+        "p.project_number",
+        "p.project_name",
+        "p.id as project_id",
+        "p.fiscal",
+        "pl.lesson",
+        "pl.recommendations",
+        "pl.lesson_sub_category",
+        "po.portfolio_abbrev",
+        "po.portfolio_name",
+        "p.id"
+      )
+      .from("portfolio as po")
+      .innerJoin("project as p", "po.id", "p.portfolio_id")
+      .innerJoin("project_lesson as pl", "p.id", "pl.project_id")
+      .innerJoin("lesson_category as lc", "lc.id", "pl.lesson_category_id")
+      .modify(whereInArray, "pf.id", portfolio)
+      .modify(whereInArray, "p.id", projectId)
+      .modify(whereInArray, "p.fiscal", fiscal)
+      .groupBy(
+        "lc.lesson_category_name",
+        "p.project_number",
+        "p.project_name",
+        "p.id",
+        "p.fiscal",
+        "pl.lesson",
+        "pl.recommendations",
+        "pl.lesson_sub_category",
+        "po.portfolio_abbrev",
+        "po.portfolio_name",
+        "p.id"
+      )
+      .then((rows) => {
+        const result = {
+          type: "category",
+          data: [],
+        };
+
+        rows.forEach((row) => {
+          const category = row.lesson_category_name;
+          const info = {
+            project_number: row.project_number,
+            project_name: row.project_name,
+            project_id: row.project_id,
+            fiscal: row.fiscal,
+            lesson: row.lesson,
+            recommendations: row.recommendations,
+            lesson_sub_category: row.lesson_sub_category,
+            portfolio_abbrev: row.portfolio_abbrev,
+            portfolio_name: row.portfolio_name,
+          };
+
+          const existingCategory = result.data.find((item) => item.category === category);
+          if (existingCategory) {
+            existingCategory.info.push(info);
+          } else {
+            result.data.push({ category, info: [info] });
+          }
+        });
+
+        return result;
+      });
+  },
+};
 
 /**
- * Gets data for the Divisional Project Reports - Project Dashboard report.
+ * Retrieve and process data from queries to create a structured result object.
  *
- * @param   {object} requestParams the params or filter values passed to filter the query on
- * @returns {any[]}
+ * @param   {object} options            - Options object containing fiscal year.
+ * @param   {string} options.fiscal     - The fiscal year to retrieve data for.
+ * @param   {string} options.quarter    - The fiscal year to retrieve data for.
+ * @param            options.project_id - The project id to filter on project id.  This param may be called project.
+ * @param            options.project    - The project id to filter on project id.  This param may be called project_id.
+ * @returns {object}                    - An object containing fiscal year, report, and report total.
  */
-const Tab_25_rpt_PA_LessonsLearnedbyCategory = (requestParams) => {
-  const query = knex.select(
-    knex.raw(`data.lesson_category.id AS LessonCategory_ID,
-    data.lesson_category.lesson_category_name,
-    data.project.project_number,
-    project.project_name,
-    project.id AS ProjectID,
-    fy.fiscal_year,
-    data.project_lesson.lesson,
-    data.project_lesson.recommendations,
-    data.project_lesson.lesson_sub_category,
-    data.portfolio.portfolio_abbrev,
-    data.portfolio.portfolio_name,
-    data.project.portfolio_id
-    FROM (data.portfolio INNER JOIN data.project ON portfolio.id = data.project.portfolio_id)
-    INNER JOIN data.fiscal_year fy on data.project.fiscal = fy.id
-    INNER JOIN (data.lesson_category INNER JOIN data.project_lesson ON data.lesson_category.id = data.project_lesson.lesson_category_id)
-    ON project.id = data.project_lesson.project_id`)
-  );
+// add other parameters if needed, like quarter, portfolio, date etc.
+const getAll = async ({ project, portfolio, fiscal }) => {
+  const projectId = Number(project);
+  try {
+    const [reportLessonsLearned] = await Promise.all([
+      queries.lessonsLearned(projectId, portfolio, fiscal),
+    ]);
 
-  if (requestParams.portfolio_id) {
-    query.where({ "data.project.portfolio_id": requestParams.portfolio_id });
-  }
-  if (requestParams.fiscal) {
-    query.where({ "data.project.fiscal": requestParams.fiscal });
-  }
-  if (requestParams.project_id) {
-    query.where({ "data.project.id": requestParams.project_id });
-  }
+    const combineFiscalTotals = (totalsByFiscal, reportSection) => {
+      const withTotals = [];
 
-  return query;
+      totalsByFiscal.forEach((fiscalTotal) => {
+        const fiscalYear = fiscalTotal.fiscal_year;
+        const sectionItems = reportSection.filter((section) => section.fiscal_year === fiscalYear);
+
+        withTotals.push({
+          sectionInfo: sectionItems,
+          sectionTotals: fiscalTotal,
+        });
+      });
+
+      return withTotals;
+    };
+
+    return { reportLessonsLearned };
+  } catch (error) {
+    log.error(error);
+    throw error;
+  }
 };
 
-module.exports = {
-  Tab_25_rpt_PA_LessonsLearnedbyCategory,
-};
+// Export the functions to be used in controller.
+//  required can be fiscal, date, portfolio, etc.
+module.exports = { required: [], getAll };

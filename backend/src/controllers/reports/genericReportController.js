@@ -50,7 +50,6 @@ const getControllerFrom = () => {
     const controller = useController(model, what);
 
     try {
-      controller.validate(request.query, reply, model.required);
       const { query } = request;
       const { templateType } = validateQueryParameters(query);
       const modifiedGetReport = getReportAndSetRequestHeaders(templateType);

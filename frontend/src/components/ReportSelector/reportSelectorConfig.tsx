@@ -109,11 +109,11 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
           "Grouped by Portfolio, sorted by Lesson Category. Project #, Name, Lesson Category, Sub Category, Lesson Learned and Recommendations.",
         parameters: [
           { label: "portfolio", required: false },
-          { label: "fiscal", required: true },
-          { label: "project", required: true },
+          { label: "fiscal", required: false },
+          { label: "project", required: false },
         ],
-        exportPDF: true,
-        exportXLSX: false,
+        exportPDF: false,
+        exportXLSX: true,
       },
       {
         value: "Tab_28_rpt_PA_MultiYrStats",
