@@ -259,6 +259,9 @@ const queries = {
             ELSE 0::money
           END )`
         ),
+        grand_totals_recoveries: knex.raw(
+          `(SUM(pb.q1_amount) + SUM(pb.q2_amount) + SUM(pb.q3_amount) + SUM(pb.q4_amount)) OVER ()`
+        ),
       })
       .leftJoin("data.project_deliverable as pd", "pb.project_deliverable_id", "pd.id")
       .leftJoin("data.project as p", "pd.project_id", "p.id")
@@ -290,9 +293,17 @@ module.exports = {
         portfolio_totals: totalsByPortfolio[portfolio.portfolio_name],
       }));
 
+      // const grandTotals = {
+      //   recoveries: reportsByPortfolioWithTotals.reduce((acc, current) => {
+      //     const totalsRecoveries = parseFloat(current.portfolio_totals.totals_recoveries.replace(/\$/g, '').replace(/\,/g, ''));
+      //     return acc + totalsRecoveries;
+      //   }, 0),
+      // }
+
       return {
         fiscal: fiscal_year,
         report: reportsByPortfolioWithTotals,
+     //   report_totals: grandTotals,
       };
     } catch (error) {
       console.error(`
