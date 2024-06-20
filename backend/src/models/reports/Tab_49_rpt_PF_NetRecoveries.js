@@ -293,7 +293,6 @@ module.exports = {
       return {
         fiscal: fiscal_year,
         report: reportsByPortfolioWithTotals,
-        report_totals,
       };
     } catch (error) {
       console.error(`
