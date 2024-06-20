@@ -13,6 +13,25 @@ const queries = {
     return knex.select("fiscal_year").from(fiscalYearTable).where("fiscal_year.id", fiscal);
   },
 
+  // portAbbrev: (fiscal) => {
+  //   return knex('data.portfolio')
+  //     .distinct('portfolio_abbrev')
+  //     .orderBy('portfolio_abbrev', 'asc')
+  //     .then(rows => rows.map(row => row.portfolio_abbrev));
+  // },
+
+  portAbbrev: (fiscal) => {
+    return knex('data.portfolio')
+      .distinct('portfolio_abbrev', 'portfolio_name') // Add the additional column here
+      .orderBy('portfolio_abbrev', 'asc')
+      .then(rows => {
+        return rows.map(row => ({
+          abbr: row.portfolio_abbrev,
+          name: row.portfolio_name // Change to desired key-value pair
+        }));
+      });
+  },
+
   report: (fiscal) => {
     return knex
       .select("*")
@@ -165,14 +184,16 @@ module.exports = {
   getAll: async (query) => {
     try {
       const { fiscal } = query;
-      const [[{ fiscal_year }], report, report_totals] = await Promise.all([
+      const [[{ fiscal_year }],  portAbbrev, report, report_totals] = await Promise.all([
         queries.fiscalYear(fiscal),
+        queries.portAbbrev(fiscal),
         queries.report(fiscal),
         queries.totals(fiscal),
       ]);
 
       return {
         fiscal: fiscal_year,
+        portAbbrev,
         report,
         report_totals,
       };
