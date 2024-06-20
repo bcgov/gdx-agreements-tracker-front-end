@@ -3,19 +3,8 @@ const { knex } = dbConnection();
 const required = ["fiscal"];
 const utils = require("./helpers");
 const _ = require("lodash");
-const { groupByProperty } = utils;
+const { groupByProperty, whereInArray } = utils;
 
-const handleParams = (query, requestParams) => {
-  if (requestParams.portfolio) {
-    const portfolio = requestParams.portfolio;
-
-    if (requestParams.portfolio instanceof Array) {
-      query.whereIn("portfolio_id", portfolio);
-    } else {
-      query.where("portfolio_id", portfolio);
-    }
-  }
-};
 // get the fiscal year based on the id passed from frontend
 
 /**
@@ -160,9 +149,10 @@ const queries = {
         "project_number",
         "project_name"
       )
+      .modify(whereInArray, "portfolio_id", requestParams.portfolio)
       .orderBy("po.portfolio_name", "p.project_name");
 
-    handleParams(query, requestParams);
+    
     return query;
   },
 
@@ -276,10 +266,9 @@ const queries = {
       .leftJoin("data.portfolio as po", "p.portfolio_id", "po.id")
 
       .where("p.fiscal", requestParams.fiscal)
-
+      .modify(whereInArray, "portfolio_id", requestParams.portfolio)
       .groupBy("portfolio_name");
 
-    handleParams(query, requestParams);
     return query;
   },
 };
