@@ -75,7 +75,7 @@ const queries = {
       .pluck("po.portfolio_name")
       .then((portfolioNames) => {
         const jsonString = JSON.stringify(portfolioNames);
-        return { portfolioNames: jsonString.replace(/[\[\]""]/g, "") };
+        return { portfolioNames: jsonString.replace(/[[\]""]/g, "") };
       });
   },
 };
@@ -88,7 +88,7 @@ const queries = {
  * @param   {string} options.quarter    - The fiscal year to retrieve data for.
  * @param            options.project_id - The project id to filter on project id.  This param may be called project.
  * @param            options.project    - The project id to filter on project id.  This param may be called project_id.
- * @param            options.portfolio
+ * @param            options.portfolio  - The portfolio to retrieve data for.
  * @returns {object}                    - An object containing fiscal year, report, and report total.
  */
 // add other parameters if needed, like quarter, portfolio, date etc.

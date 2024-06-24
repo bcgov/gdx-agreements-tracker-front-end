@@ -36,11 +36,12 @@ const groupByProperty = (list = [], group = "portfolio_name") => {
 };
 
 /**
- * If a parameter filter has been selected, return only queries matching those parameters. Otherwise, return them all.
+ * Builds a WHERE IN clause for a query based on the provided parameter.
  *
- * @param {knex.queryBuilder}              queryBuilder - The query builder.
- * @param {string}                         column       - The name of the database column to filter on.
- * @param {string | number | Array | null} parameter    - The query parameter with which to filter results.
+ * @param   {Knex.QueryBuilder} queryBuilder - The Knex query builder instance.
+ * @param   {string}            column       - The column to filter on.
+ * @param   {*}                 parameter    - The value to filter by. Can be a single number, an array of numbers, or an array containing a single string with comma-separated numbers.
+ * @returns {Knex.QueryBuilder}              The modified query builder instance.
  */
 const whereInArray = (queryBuilder, column, parameter) => {
   if ("number" === typeof parameter && !isNaN(parameter)) {
