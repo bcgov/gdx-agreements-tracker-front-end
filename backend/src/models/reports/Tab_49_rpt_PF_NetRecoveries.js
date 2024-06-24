@@ -259,9 +259,6 @@ const queries = {
             ELSE 0::money
           END )`
         ),
-        grand_totals_recoveries: knex.raw(
-          `(SUM(pb.q1_amount) + SUM(pb.q2_amount) + SUM(pb.q3_amount) + SUM(pb.q4_amount)) OVER ()`
-        ),
       })
       .leftJoin("data.project_deliverable as pd", "pb.project_deliverable_id", "pd.id")
       .leftJoin("data.project as p", "pd.project_id", "p.id")
@@ -274,16 +271,27 @@ const queries = {
 
     return query;
   },
+  grand_totals: (requestParams) =>
+    knex(queries.Tab_49_totals(requestParams).as("report"))
+      .sum({
+        totals_recoveries_sum: "totals_recoveries",
+        totals_expenses_sum: "totals_expenses",
+        totals_net_sum: "totals_net",
+        totals_to_date_sum: "totals_to_date",
+        totals_remaining_sum: "totals_remaining",
+      })
+      .first(),
 };
 
 module.exports = {
   getAll: async (query) => {
     try {
       const { fiscal } = query;
-      const [[{ fiscal_year }], report, report_totals] = await Promise.all([
+      const [[{ fiscal_year }], report, report_totals, grand_totals] = await Promise.all([
         queries.getFiscalYear(fiscal),
         queries.Tab_49_rpt_PF_NetRecoveries(query),
         queries.Tab_49_totals(query),
+        queries.grand_totals(query),
       ]);
 
       const reportByPortfolio = groupByProperty(report, "portfolio_name");
@@ -293,17 +301,10 @@ module.exports = {
         portfolio_totals: totalsByPortfolio[portfolio.portfolio_name],
       }));
 
-      // const grandTotals = {
-      //   recoveries: reportsByPortfolioWithTotals.reduce((acc, current) => {
-      //     const totalsRecoveries = parseFloat(current.portfolio_totals.totals_recoveries.replace(/\$/g, '').replace(/\,/g, ''));
-      //     return acc + totalsRecoveries;
-      //   }, 0),
-      // }
-
       return {
         fiscal: fiscal_year,
         report: reportsByPortfolioWithTotals,
-     //   report_totals: grandTotals,
+        grand_totals: grand_totals,
       };
     } catch (error) {
       console.error(`
