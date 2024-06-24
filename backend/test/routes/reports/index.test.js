@@ -61,7 +61,6 @@ const testReport = (reportName) => {
       expect(response.statusCode).toBe(401);
     });
 
-
     it(`${reportName} - Returns 200`, async () => {
       requestObject.url = `${requestObject.url}${requiredParams}&portfolio=2`;
       model.required = ["portfolio"];
