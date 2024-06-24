@@ -43,8 +43,15 @@ const groupByProperty = (list = [], group = "portfolio_name") => {
  * @param {string | number | Array | null} parameter    - The query parameter with which to filter results.
  */
 const whereInArray = (queryBuilder, column, parameter) => {
-  if (undefined !== parameter) {
-    queryBuilder.whereIn(column, parameter.toString().split(","));
+  if ("number" === typeof parameter && !isNaN(parameter)) {
+    return queryBuilder.where(column, parameter);
+  }
+  if (Array.isArray(parameter) && "string" === typeof parameter[0] && parameter[0].includes(",")) {
+    const numbers = parameter[0].split(",").map(Number);
+    return queryBuilder.whereIn(column, numbers);
+  }
+  if (Array.isArray(parameter)) {
+    return queryBuilder.whereIn(column, parameter);
   }
 };
 

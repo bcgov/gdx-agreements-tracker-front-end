@@ -23,7 +23,7 @@ const queries = {
       .innerJoin("project as p", "po.id", "p.portfolio_id")
       .innerJoin("project_lesson as pl", "p.id", "pl.project_id")
       .innerJoin("lesson_category as lc", "lc.id", "pl.lesson_category_id")
-      .modify(whereInArray, "pf.id", portfolio)
+      .modify(whereInArray, "po.id", portfolio)
       .modify(whereInArray, "p.id", projectId)
       .modify(whereInArray, "p.fiscal", fiscal)
       .groupBy(
@@ -40,10 +40,7 @@ const queries = {
         "p.id"
       )
       .then((rows) => {
-        const result = {
-          type: "category",
-          data: [],
-        };
+        const result = [];
 
         rows.forEach((row) => {
           const category = row.lesson_category_name;
@@ -59,15 +56,26 @@ const queries = {
             portfolio_name: row.portfolio_name,
           };
 
-          const existingCategory = result.data.find((item) => item.category === category);
+          const existingCategory = result.find((item) => item.category === category);
           if (existingCategory) {
             existingCategory.info.push(info);
           } else {
-            result.data.push({ category, info: [info] });
+            result.push({ category, info: [info] });
           }
         });
 
         return result;
+      });
+  },
+  portfolio: (portfolio) => {
+    return knex
+      .select("po.portfolio_name")
+      .from("portfolio as po")
+      .modify(whereInArray, "po.id", portfolio)
+      .pluck("po.portfolio_name")
+      .then((portfolioNames) => {
+        const jsonString = JSON.stringify(portfolioNames);
+        return { portfolioNames: jsonString.replace(/[\[\]""]/g, "") };
       });
   },
 };
@@ -80,33 +88,19 @@ const queries = {
  * @param   {string} options.quarter    - The fiscal year to retrieve data for.
  * @param            options.project_id - The project id to filter on project id.  This param may be called project.
  * @param            options.project    - The project id to filter on project id.  This param may be called project_id.
+ * @param            options.portfolio
  * @returns {object}                    - An object containing fiscal year, report, and report total.
  */
 // add other parameters if needed, like quarter, portfolio, date etc.
 const getAll = async ({ project, portfolio, fiscal }) => {
   const projectId = Number(project);
   try {
-    const [reportLessonsLearned] = await Promise.all([
+    const [reportLessonsLearned, reportPortfolio] = await Promise.all([
       queries.lessonsLearned(projectId, portfolio, fiscal),
+      queries.portfolio(portfolio),
     ]);
 
-    const combineFiscalTotals = (totalsByFiscal, reportSection) => {
-      const withTotals = [];
-
-      totalsByFiscal.forEach((fiscalTotal) => {
-        const fiscalYear = fiscalTotal.fiscal_year;
-        const sectionItems = reportSection.filter((section) => section.fiscal_year === fiscalYear);
-
-        withTotals.push({
-          sectionInfo: sectionItems,
-          sectionTotals: fiscalTotal,
-        });
-      });
-
-      return withTotals;
-    };
-
-    return { reportLessonsLearned };
+    return { reportLessonsLearned, reportPortfolio };
   } catch (error) {
     log.error(error);
     throw error;
