@@ -158,7 +158,7 @@ const queries = {
     ) a
   `);
 
-    return knex.select(selectFields).from(subquery).where("contract_id", contract);
+    return knex.select(selectFields).from(subquery).where("contract_id", contract).first();
   },
 
   contractAmendments: (contract) =>
