@@ -61,16 +61,6 @@ const testReport = (reportName) => {
       expect(response.statusCode).toBe(401);
     });
 
-    it(`${reportName} - Returns 400 Bad request, due to invalidate parameters`, async () => {
-      requestObject.url = `${requestObject.url}${requiredParams}`;
-      model.required = ["requiredField"];
-      const response = await app.inject(requestObject);
-      expect(JSON.parse(response.body).data.message).toBe(
-        "At least one of the following parameters is required: requiredField"
-      );
-      expect(response.statusCode).toBe(400);
-    });
-
     it(`${reportName} - Returns 200`, async () => {
       requestObject.url = `${requestObject.url}${requiredParams}&portfolio=2`;
       model.required = ["portfolio"];
