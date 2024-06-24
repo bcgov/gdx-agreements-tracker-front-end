@@ -280,17 +280,30 @@ const queries = {
         totals_remaining_sum: "totals_remaining",
       })
       .first(),
+
+  portfolios: (portfolio) => {
+    return knex
+      .select("po.portfolio_abbrev")
+      .from("portfolio as po")
+      .modify(whereInArray, "po.id", portfolio)
+      .pluck("po.portfolio_abbrev")
+      .then((portfolioNames) => {
+        const jsonString = JSON.stringify(portfolioNames);
+        return { portfolioNames: jsonString.replace(/[[\]""]/g, "") };
+      });
+  },
 };
 
 module.exports = {
   getAll: async (query) => {
     try {
-      const { fiscal } = query;
-      const [[{ fiscal_year }], report, report_totals, grand_totals] = await Promise.all([
+      const { fiscal, portfolio } = query;
+      const [[{ fiscal_year }], report, report_totals, grand_totals, portfolios] = await Promise.all([
         queries.getFiscalYear(fiscal),
         queries.Tab_49_rpt_PF_NetRecoveries(query),
         queries.Tab_49_totals(query),
         queries.grand_totals(query),
+        queries.portfolios(portfolio)
       ]);
 
       const reportByPortfolio = groupByProperty(report, "portfolio_name");
@@ -304,6 +317,7 @@ module.exports = {
         fiscal: fiscal_year,
         report: reportsByPortfolioWithTotals,
         grand_totals: grand_totals,
+        portfolios
       };
     } catch (error) {
       console.error(`
