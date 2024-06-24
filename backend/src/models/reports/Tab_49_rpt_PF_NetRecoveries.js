@@ -20,7 +20,7 @@ const queries = {
     if (requestParams.fiscal) {
       query.where({ "fiscal_year.id": requestParams.fiscal });
     }
-  
+
     return query;
   },
 
@@ -152,7 +152,6 @@ const queries = {
       .modify(whereInArray, "portfolio_id", requestParams.portfolio)
       .orderBy("po.portfolio_name", "p.project_name");
 
-    
     return query;
   },
 
