@@ -14,22 +14,18 @@ const queries = {
   },
 
   portAbbrev: (fiscal) => {
-    return knex('data.portfolio')
-      .distinct('portfolio_abbrev', 'portfolio_name')
-      .orderBy('portfolio_abbrev', 'asc')
-      .then(rows => {
-        // Map the rows and add "(Inactive)" where necessary
-        let mappedRows = rows.map(row => {
+    return knex("data.portfolio")
+      .distinct("portfolio_abbrev", "portfolio_name")
+      .orderBy("portfolio_abbrev", "asc")
+      .then((rows) => {
+        let mappedRows = rows.map((row) => {
           let str = row.portfolio_abbrev;
-  
-          if (str === "EDS") str += " (Inactive)";
-          if (str === "DIV") str += " (Inactive)";
-          if (str === "MA") str += " (Inactive)";
-  
+          if ("EDS" === str) str += " (Inactive)";
+          if ("DIV" === str) str += " (Inactive)";
+          if ("MA" === str) str += " (Inactive)";
           return str;
         });
-  
-        // Sort the mapped rows so that "Inactive" ones come at the end
+
         mappedRows.sort((a, b) => {
           if (a.includes("(Inactive)") && !b.includes("(Inactive)")) {
             return 1;
@@ -39,12 +35,10 @@ const queries = {
             return a.localeCompare(b);
           }
         });
-  
-        // Join the sorted array into a single string
-        return mappedRows.join(', ');
+
+        return mappedRows.join(", ");
       });
   },
-  
 
   report: (fiscal) => {
     return knex
@@ -198,7 +192,7 @@ module.exports = {
   getAll: async (query) => {
     try {
       const { fiscal } = query;
-      const [[{ fiscal_year }],  portAbbrev, report, report_totals] = await Promise.all([
+      const [[{ fiscal_year }], portAbbrev, report, report_totals] = await Promise.all([
         queries.fiscalYear(fiscal),
         queries.portAbbrev(fiscal),
         queries.report(fiscal),
