@@ -13,24 +13,38 @@ const queries = {
     return knex.select("fiscal_year").from(fiscalYearTable).where("fiscal_year.id", fiscal);
   },
 
-  // portAbbrev: (fiscal) => {
-  //   return knex('data.portfolio')
-  //     .distinct('portfolio_abbrev')
-  //     .orderBy('portfolio_abbrev', 'asc')
-  //     .then(rows => rows.map(row => row.portfolio_abbrev));
-  // },
-
   portAbbrev: (fiscal) => {
     return knex('data.portfolio')
-      .distinct('portfolio_abbrev', 'portfolio_name') // Add the additional column here
+      .distinct('portfolio_abbrev', 'portfolio_name')
       .orderBy('portfolio_abbrev', 'asc')
       .then(rows => {
-        return rows.map(row => ({
-          abbr: row.portfolio_abbrev,
-          name: row.portfolio_name // Change to desired key-value pair
-        }));
+        // Map the rows and add "(Inactive)" where necessary
+        let mappedRows = rows.map(row => {
+          let str = row.portfolio_abbrev;
+  
+          if (str === "EDS") str += " (Inactive)";
+          if (str === "DIV") str += " (Inactive)";
+          if (str === "MA") str += " (Inactive)";
+  
+          return str;
+        });
+  
+        // Sort the mapped rows so that "Inactive" ones come at the end
+        mappedRows.sort((a, b) => {
+          if (a.includes("(Inactive)") && !b.includes("(Inactive)")) {
+            return 1;
+          } else if (!a.includes("(Inactive)") && b.includes("(Inactive)")) {
+            return -1;
+          } else {
+            return a.localeCompare(b);
+          }
+        });
+  
+        // Join the sorted array into a single string
+        return mappedRows.join(', ');
       });
   },
+  
 
   report: (fiscal) => {
     return knex
