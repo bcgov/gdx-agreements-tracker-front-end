@@ -66,8 +66,8 @@ export const categoriesAndTypes: IReportCategoriesAndTypes = [
         description:
           "Summary report for an individual Contract outlines initial setup, internal CAS Coding information, Invoices Process, Contract Payment Summary and details of any amendments done.",
         parameters: [{ label: "contract", required: true }],
-        exportPDF: true,
-        exportXLSX: false,
+        exportPDF: false,
+        exportXLSX: true,
       },
     ],
   },
