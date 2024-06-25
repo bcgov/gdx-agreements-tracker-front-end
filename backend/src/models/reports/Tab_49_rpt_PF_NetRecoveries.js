@@ -15,10 +15,10 @@ const { groupByProperty, whereInArray } = utils;
  */
 
 const queries = {
-  getFiscalYear: (requestParams) => {
+  getFiscalYear: (fiscal) => {
     const query = knex.select(knex.raw(`fiscal_year from data.fiscal_year`));
-    if (requestParams.fiscal) {
-      query.where({ "fiscal_year.id": requestParams.fiscal });
+    if (fiscal) {
+      query.where({ "fiscal_year.id": fiscal });
     }
 
     return query;
@@ -288,7 +288,8 @@ const queries = {
       .modify(whereInArray, "po.id", portfolio)
       .pluck("po.portfolio_abbrev")
       .then((portfolioNames) => {
-        const jsonString = JSON.stringify(portfolioNames);
+        let jsonString = JSON.stringify(portfolioNames);
+        jsonString = jsonString.replace(",", ", ");
         return { portfolioNames: jsonString.replace(/[[\]""]/g, "") };
       });
   },
@@ -298,13 +299,14 @@ module.exports = {
   getAll: async (query) => {
     try {
       const { fiscal, portfolio } = query;
-      const [[{ fiscal_year }], report, report_totals, grand_totals, portfolios] = await Promise.all([
-        queries.getFiscalYear(fiscal),
-        queries.Tab_49_rpt_PF_NetRecoveries(query),
-        queries.Tab_49_totals(query),
-        queries.grand_totals(query),
-        queries.portfolios(portfolio)
-      ]);
+      const [[{ fiscal_year }], report, report_totals, grand_totals, portfolios] =
+        await Promise.all([
+          queries.getFiscalYear(fiscal),
+          queries.Tab_49_rpt_PF_NetRecoveries(query),
+          queries.Tab_49_totals(query),
+          queries.grand_totals(query),
+          queries.portfolios(portfolio),
+        ]);
 
       const reportByPortfolio = groupByProperty(report, "portfolio_name");
       const totalsByPortfolio = _.keyBy(report_totals, "portfolio_name");
@@ -317,7 +319,7 @@ module.exports = {
         fiscal: fiscal_year,
         report: reportsByPortfolioWithTotals,
         grand_totals: grand_totals,
-        portfolios
+        portfolios,
       };
     } catch (error) {
       console.error(`
