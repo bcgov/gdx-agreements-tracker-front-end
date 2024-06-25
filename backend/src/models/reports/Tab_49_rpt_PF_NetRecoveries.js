@@ -289,7 +289,7 @@ const queries = {
       .pluck("po.portfolio_abbrev")
       .then((portfolioNames) => {
         let jsonString = JSON.stringify(portfolioNames);
-        jsonString = jsonString.replace(",", ", ");
+        jsonString = jsonString.replace(/,/g, ", ");
         return { portfolioNames: jsonString.replace(/[[\]""]/g, "") };
       });
   },
