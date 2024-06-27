@@ -9,10 +9,30 @@ const { knex } = dbConnection();
  */
 const queries = {
   recoveries: (fiscalFrom, fiscalTo) => {
-    return knex("tab_21_recoverables_by_fiscal")
-      .select("*")
-      .where("budget_fiscal", ">=", fiscalFrom)
-      .andWhere("budget_fiscal", "<=", fiscalTo);
+    return knex.raw(`
+      SELECT 
+  hp.Project_Number, 
+  hp.Project_Name, 
+  hp.Total_Project_Budget, 
+  fy.Fiscal_Year AS BudgetFiscal, 
+  hpb.Q1, 
+  hpb.Q2, 
+  hpb.Q3, 
+  hpb.Q4, 
+  COALESCE(hpb.Q1, 0::money) + COALESCE(hpb.Q2, 0::money) + COALESCE(hpb.Q3, 0::money) + COALESCE(hpb.Q4, 0::money) AS TotalRecovered
+FROM 
+  data.historical_projects as hp
+  INNER JOIN data.Historical_Project_billing hpb ON hp.Project_Number = hpb.Project_Number
+  INNER JOIN data.Fiscal_Year fy ON hpb.Fiscal_Year = fy.ID
+GROUP BY 
+  hp.Project_Number, 
+  hp.Project_Name, 
+  hp.Total_Project_Budget, 
+  fy.Fiscal_Year, 
+  hpb.Q1, 
+  hpb.Q2, 
+  hpb.Q3, 
+  hpb.Q4;`);
   },
   fiscalGrandTotals: (fiscalFrom, fiscalTo) => {
     return knex
@@ -65,13 +85,14 @@ module.exports = {
     const [reportRecoveries, reportFiscalGrandTotals, reportMultiFiscalGrandTotals] =
       await Promise.all([
         queries.recoveries(fiscalFrom, fiscalTo),
-        queries.fiscalGrandTotals(fiscalFrom, fiscalTo),
-        queries.multiFiscalGrandTotals(fiscalFrom, fiscalTo),
+        //  queries.fiscalGrandTotals(fiscalFrom, fiscalTo),
+        //  queries.multiFiscalGrandTotals(fiscalFrom, fiscalTo),
       ]);
 
     return {
-      reportRecoveriesWithTotals: combineFiscalTotals(reportFiscalGrandTotals, reportRecoveries),
-      reportMultiFiscalGrandTotals,
+      //  reportRecoveriesWithTotals: combineFiscalTotals(reportFiscalGrandTotals, reportRecoveries),
+      //  reportMultiFiscalGrandTotals,
+      reportRecoveries,
       fiscalFrom,
       fiscalTo,
     };
