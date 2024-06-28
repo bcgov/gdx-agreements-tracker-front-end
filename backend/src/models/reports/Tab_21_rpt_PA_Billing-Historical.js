@@ -53,7 +53,7 @@ const queries = {
 
 
   multiFiscalGrandTotals: (fiscalFrom, fiscalTo) => {
-    return knex("tab_21_recoverables_by_fiscal")
+    return knex(queries.recoveries(fiscalFrom, fiscalTo).as('tab_21_recoverables'))
       .sum("q1 as q1")
       .sum("q2 as q2")
       .sum("q3 as q3")
@@ -89,13 +89,12 @@ module.exports = {
       await Promise.all([
         queries.recoveries(fiscalFrom, fiscalTo),
         queries.fiscalGrandTotals(fiscalFrom, fiscalTo),
-        //  queries.multiFiscalGrandTotals(fiscalFrom, fiscalTo),
+        queries.multiFiscalGrandTotals(fiscalFrom, fiscalTo),
       ]);
 
     return {
       reportRecoveriesWithTotals: combineFiscalTotals(reportFiscalGrandTotals, reportRecoveries),
-      //  reportMultiFiscalGrandTotals,
-      //reportRecoveries,
+      reportMultiFiscalGrandTotals,
       fiscalFrom,
       fiscalTo,
     };
