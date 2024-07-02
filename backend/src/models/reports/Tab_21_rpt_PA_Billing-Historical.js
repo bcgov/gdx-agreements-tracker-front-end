@@ -69,8 +69,8 @@ const combineFiscalTotals = (totalsByFiscal, reportSection) => {
   const withTotals = [];
 
   totalsByFiscal.forEach((fiscalTotal) => {
-    const fiscalYear = fiscalTotal.budget_fiscal;
-    const sectionItems = reportSection.filter((section) => section.budget_fiscal === fiscalYear);
+    const fiscalYear = fiscalTotal.budgetfiscal;
+    const sectionItems = reportSection.filter((section) => section.budgetfiscal === fiscalYear);
 
     withTotals.push({
       sectionInfo: sectionItems,
