@@ -3,7 +3,6 @@ FROM postgres:15-bullseye
 
 RUN set -ex; \
     apt-get update; \
-    apt-get -y install postgresql-15-pgaudit;
 
 ENV RUNUSER postgres
 
