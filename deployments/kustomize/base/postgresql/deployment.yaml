@@ -36,9 +36,6 @@ spec:
         - name: database-volume
           persistentVolumeClaim:
             claimName: postgres-pvc
-        - name: database-volume-audit-log
-          persistentVolumeClaim:
-            claimName: postgres-pvc-audit-log
       containers:
         - name: deployment
           image: bcgovgdx/gdx-agreements-tracker-postgres-run
@@ -66,8 +63,6 @@ spec:
             - name: database-volume
               mountPath: /var/run
               subPath: postgres-run
-            - name: database-volume-audit-log
-              mountPath: /var/log/postgresql
           resources:
             requests:
               cpu: 100m
